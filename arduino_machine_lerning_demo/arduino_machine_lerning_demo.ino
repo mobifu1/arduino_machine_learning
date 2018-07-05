@@ -36,7 +36,7 @@ float training_data_set[num_of_data_set][num_of_inputs + num_of_outputs] = { //i
 //--------------------------------------------------------------------
 const int num_of_test_data_set = 6; //length of table
 float test_data_set[num_of_test_data_set][num_of_inputs] = { //iput data to predict
-  {1, 3, 2, 1}, // Input: yellow tomato
+  {1, 4, 2, 1}, // Input: yellow tomato
   {1, 2, 2, 1}, // Input: orange tomato
   {1, 1, 2, 1}, // Input: red tomato
   {3, 5, 3, 1}, // Input: green banana
@@ -89,8 +89,11 @@ void start_learning() {
   do { //search for local minimum
 
     calc_max_gradient();
+    //Serial.println("Max.Gradient=" + String(gradients[max_gradient_y][max_gradient_x], 5) + " Change Weight=[" + String(max_gradient_y) + "][" + String(max_gradient_x) + "]" + " Learning Rate=" + String(learn_rate, 5));
+
     if (gradients[max_gradient_y][max_gradient_x] > 0) weights[max_gradient_y][max_gradient_x] += learn_rate;
-    if (gradients[max_gradient_y][max_gradient_x] < 0) weights[max_gradient_y][max_gradient_x] -= learn_rate;
+    if (gradients[max_gradient_y][max_gradient_x] <= 0) weights[max_gradient_y][max_gradient_x] -= learn_rate;
+
     total_error = calc_error();
     //Serial.println("Total Error=" + String(total_error));
 
@@ -136,9 +139,12 @@ void calc_max_gradient() {
       float diff = total_error - new_error;
       gradients[y][x] = diff;
 
+      //Serial.println("Gradient=" + String(diff, 5) + " Position=[" + String(y) + "][" + String(x) + "]" + " Total Error=" + String(total_error, 5));
+
       weights[y][x] -= learn_rate;
 
       if (fabs(diff) > max_steigung) {
+        //Serial.println("New Max. Gradient");
         max_steigung = fabs(diff);
         max_gradient_y = y;
         max_gradient_x = x;
