@@ -1,31 +1,33 @@
 //Demo KNN Classification of Fruits
 //Machine Learning with Backpropagation Learning Mode
+//Make what you want with this sourcecode :-)
 
-#define num_of_inputs 4   //neurons
-#define num_of_hiddens 5  //neurons
-#define num_of_outputs 4  //neurons
-#define num_of_weights 6  //1 x neuron = input, input, input, input, input, output
-#define num_of_neurons 14 //neurons
-#define num_of_layers 3   //output, hidden 2, hidden 1
+#define num_of_inputs 4   // neurons
+#define num_of_hiddens 5  // neurons
+#define num_of_outputs 4  // neurons
+#define num_of_weights 6  // 1 x neuron = input, input, input, input, input, output
+#define num_of_neurons 14 // neurons
+#define num_of_layers 3   // output, hidden 2, hidden 1
 
-float inputs[num_of_inputs] = { };   //input neuron data
-float outputs[num_of_outputs] = { }; //output neuron data
+float inputs[num_of_inputs] = { };   // input neuron data
+float outputs[num_of_outputs] = { }; // output neuron data
 //--------------------------------------------------------------------
-float weights[num_of_neurons][num_of_weights] = {
+float weights[num_of_neurons][num_of_weights] = { //contains all weights and bias values
 
-  //neuron: input, input, input, input, input, output
+  // 1 x neuron = input, input, input, input, input, output
 
 };
 //--------------------------------------------------------------------
 int max_gradient_x ; // x position in gradients table
 int max_gradient_y ; // y position in gradients table
 
-float gradients[num_of_neurons][num_of_weights] = {
+float gradients[num_of_neurons][num_of_weights] = { // values to search the highest improvement of error
 };
 //--------------------------------------------------------------------
-String objects[4] = {"Tomato", "Banana", "Melone", "Raspberry"};
+String objects[4] = {"Tomato", "Banana", "Melone", "Raspberry"}; // alias of the 4 output neurons
 //--------------------------------------------------------------------
 const int num_of_data_set = 8; //length of table
+// a googd way for better results is format the input data into a range between -1 to +1 for example.
 float training_data_set[num_of_data_set][num_of_inputs + num_of_outputs] = { //input and output data to learn
   //4x input     |4x output
   {1, 2, 0.05, 1, 1, 0, 0, 0}, // orange tomato               Input 0:   shape: 1=round, 2=oval    3=long
@@ -38,8 +40,8 @@ float training_data_set[num_of_data_set][num_of_inputs + num_of_outputs] = { //i
   {1, 5, 0.01, 3, 0, 0, 0, 1}, // green raspberry            Output 3:    type: 1=raspberry
 };
 //--------------------------------------------------------------------
-const int num_of_test_data_set = 12; //length of table
-float test_data_set[num_of_test_data_set][num_of_inputs] = { //iput data to predict
+const int num_of_test_data_set = 12; // length of table, count of object
+float test_data_set[num_of_test_data_set][num_of_inputs] = { // input data to predict
   {1, 5, 0.015, 1}, // Input: green tomato
   {1, 2, 0.030, 1}, // Input: orange tomato
   {1, 1, 0.050, 1}, // Input: red tomato
@@ -86,8 +88,10 @@ void start_predict() {
 
   for ( int i = 0; i < num_of_test_data_set; i++) {
     calc_neuron_net(test_data_set[i][0], test_data_set[i][1], test_data_set[i][2], test_data_set[i][3]); //input test data
+
     Serial.print(String(i) + ". Out 0 = " + String(outputs[0]) + " / Out 1 = " + String(outputs[1]) + " / Out 2 = " + String(outputs[2]) + " / Out 3 = " + String(outputs[3]));
-    if (outputs[0] >= 0.85)Serial.print(" = " + objects[0]);
+
+    if (outputs[0] >= 0.85) Serial.print(" = " + objects[0]);
     if (outputs[1] >= 0.85) Serial.print(" = " + objects[1]);
     if (outputs[2] >= 0.85) Serial.print(" = " + objects[2]);
     if (outputs[3] >= 0.85) Serial.print(" = " + objects[3]);
@@ -106,7 +110,7 @@ void start_learning() {
 
   do { //search for local minimum
 
-    //Backpropagsatio: training the layers
+    //Backpropagation: training the layers from back to front
     if (used_layer == 0)  calc_max_gradient(10, 13);     // number of output layer  = from 10 to 13 neuron
     if (used_layer == 1)  calc_max_gradient(5, 9);       // number of hidden layer 2= from 0 to 4 neuron
     if (used_layer == 2)  calc_max_gradient(0, 4);       // number of hidden layer 1= from 0 to 4 neuron
@@ -115,20 +119,20 @@ void start_learning() {
     if (gradients[max_gradient_y][max_gradient_x] < 0) weights[max_gradient_y][max_gradient_x] -= learn_rate;
     total_error = calc_error();
 
-    learn_rate = total_error / 10 ; //dynamic learn_rate
+    learn_rate = total_error / 10 ; //dynamic learn rate is depending of the error
 
     //Serial.println("Max.Gradient=" + String(gradients[max_gradient_y][max_gradient_x], 5) + " Change Weight=[" + String(max_gradient_y) + "][" + String(max_gradient_x) + "]" + " Learning Rate=" + String(learn_rate, 5) + " Total Error=" + String(total_error, 5));
 
     iterations_counter++;
 
-    int result = iterations_counter % 25;//every 50 iterations
+    int result = iterations_counter % 25;//every 25 iterations
     if (result == 0) {
       used_layer++;
       if (used_layer == num_of_layers) used_layer = 0;
       Serial.println("------------------------");
       Serial.println("Iterations=" + String(iterations_counter));
       Serial.println("Total Error=" + String(total_error, 5));
-      Serial.println("Learn Rate=" + String(learn_rate));
+      Serial.println("Learn Rate=" + String(learn_rate, 5));
     }
 
     if (iterations_counter > maximum_iterations)break;
@@ -143,10 +147,10 @@ void start_learning() {
   total_error = calc_error();
   Serial.println("Total Error=" + String(total_error, 5));
   if (total_error < accepted_error)Serial.println("Result OK");
-  if (iterations_counter > maximum_iterations)Serial.println("Result Fail");
+  if (iterations_counter > maximum_iterations)Serial.println("End:Reached the maximum Iterations");
 }
 //-----------------------------------------------------------------------------------------------------------------
-void calc_max_gradient(int from_neuron, int to_neuron) { //number of hidden layer 1=from 0 to 4 neuron   /    number of hidden layer 2= from 5 to 9 neuron
+void calc_max_gradient(int from_neuron, int to_neuron) { // search max. gradient of one layer
 
   float total_error = calc_error();
   float max_steigung = 0;
@@ -175,7 +179,7 @@ void calc_max_gradient(int from_neuron, int to_neuron) { //number of hidden laye
   }
 }
 //-----------------------------------------------------------------------------------------------------------------
-float calc_error() {
+float calc_error() { // find the whole error of neuron network by input the training data
 
   float total_error = 0;
   float error_0;
@@ -184,25 +188,26 @@ float calc_error() {
   float error_3;
 
   for (int i = 0; i < num_of_data_set; i++) {
+
     calc_neuron_net(training_data_set[i][0] , training_data_set[i][1] , training_data_set[i][2] , training_data_set[i][3]);
 
-    error_0 = pow ((training_data_set[i][4] - outputs[0]), 2); //error^2
-    error_1 = pow ((training_data_set[i][5] - outputs[1]), 2); //error^2
-    error_2 = pow ((training_data_set[i][6] - outputs[2]), 2); //error^2
-    error_3 = pow ((training_data_set[i][7] - outputs[3]), 2); //error^2
+    error_0 = pow ((training_data_set[i][4] - outputs[0]), 2);
+    error_1 = pow ((training_data_set[i][5] - outputs[1]), 2);
+    error_2 = pow ((training_data_set[i][6] - outputs[2]), 2);
+    error_3 = pow ((training_data_set[i][7] - outputs[3]), 2);
 
     total_error += error_0;
     total_error += error_1;
     total_error += error_2;
     total_error += error_3;
-    //Serial.println("Error=" + String(total_error));
   }
+
   //Serial.println("Total Error=" + String(total_error));
   total_error *= 0.5;
   return total_error;
 }
 //-----------------------------------------------------------------------------------------------------------------
-void calc_neuron_net(float x0, float x1, float x2, float x3) { //input data
+void calc_neuron_net(float x0, float x1, float x2, float x3) { // calculate all output values by input values
 
   //######first hidden layer##########################
   float y0 = calc_neuron(x0, weights[0][0], x1, weights[0][1], x2, weights[0][2], x3, weights[0][3], 0, 0, weights[0][5]);
@@ -268,7 +273,7 @@ void calc_neuron_net(float x0, float x1, float x2, float x3) { //input data
   //Serial.println("Out3=" + String(out3));
 }
 //-----------------------------------------------------------------------------------------------------------------
-float calc_neuron(float input_0, float weight_0, float input_1, float weight_1, float input_2, float weight_2, float input_3, float weight_3, float input_4, float weight_4, float weight_output) {
+float calc_neuron(float input_0, float weight_0, float input_1, float weight_1, float input_2, float weight_2, float input_3, float weight_3, float input_4, float weight_4, float weight_output) { // this is one neuron
 
   float output = weight_output + (input_0 * weight_0) + (input_1 * weight_1) + (input_2 * weight_2) + (input_3 * weight_3) + (input_4 * weight_4);
   return output;
@@ -276,9 +281,9 @@ float calc_neuron(float input_0, float weight_0, float input_1, float weight_1, 
 //-----------------------------------------------------------------------------------------------------------------
 float sigmoid(float x) { //sigmoid funktion
 
-  float e = 2.71828; float steilheit = 2;
+  float e = 2.71828; float gain = 2;
   float result;
-  result = 1 / (1 + (pow (e, (steilheit * x * -1))));
+  result = 1 / (1 + (pow (e, (gain * x * -1))));
   return result;
 }
 //-----------------------------------------------------------------------------------------------------------------
@@ -290,7 +295,7 @@ void test_sigmoid_function() {
   }
 }
 //-----------------------------------------------------------------------------------------------------------------
-void show_weights() {
+void show_weights() { //you can copy the serial output of weights into the sourcecode
 
   Serial.println("------------------------");
   Serial.println("Show Weights:");
@@ -301,7 +306,7 @@ void show_weights() {
   }
 }
 //-----------------------------------------------------------------------------------------------------------------
-void init_random_weights() {
+void init_random_weights() { // start your lern process with random values
 
   Serial.println("Init weights by random");
   for ( int y = 0; y < num_of_neurons; y++) {
@@ -312,7 +317,7 @@ void init_random_weights() {
   }
 }
 //-----------------------------------------------------------------------------------------------------------------
-void init_learned_weights() {
+void init_learned_weights() { // this is copy and paste from serial output all weights after learning process
 
   Serial.println("Init weights by learned values");
 
@@ -402,7 +407,7 @@ void init_learned_weights() {
   weights[13][5] = -1.3313150;
 }
 //-----------------------------------------------------------------------------------------------------------------
-float create_random() {
+float create_random() { // random numbes beetwen -1 and +1
 
   float randNum = rand() % 1000;
   randNum /= 1000;
