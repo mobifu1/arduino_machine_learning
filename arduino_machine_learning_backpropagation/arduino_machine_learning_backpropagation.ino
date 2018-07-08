@@ -11,7 +11,7 @@
 
 float inputs[num_of_inputs] = { };   // input neuron data
 float outputs[num_of_outputs] = { }; // output neuron data
-String objects[num_of_outputs] = {"Tomato", "Banana", "Melone", "Raspberry"}; // alias of the 4 output neurons
+String objects[num_of_outputs] = {"Tomato", "Banana", "Melon", "Raspberry"}; // alias of the 4 output neurons
 //--------------------------------------------------------------------
 float weights[num_of_neurons][num_of_weights] = { //contains all weights and bias values
 
@@ -29,14 +29,14 @@ const int num_of_data_set = 8; //length of table
 // a googd way for better results is format the input data into a range between -1 to +1 for example.
 float training_data_set[num_of_data_set][num_of_inputs + num_of_outputs] = { //input and output data to learn
   //4x input     |4x output
-  {1, 2, 0.05, 1, 1, 0, 0, 0}, // orange tomato               Input 0:   shape: 1=round, 2=oval    3=long
-  {1, 1, 0.05, 1, 1, 0, 0, 0}, // red tomato                  Input 1:   color: 1=red    2=orange  3=yellow  4=lightgreen 5=green
-  {3, 4, 0.20, 1, 0, 1, 0, 0}, // lightgreen banana           Input 2:  weight: in Kilogramms
-  {3, 3, 0.20, 1, 0, 1, 0, 0}, // yellow banana               Input 3: surface: 1=even   2=spoty   3=rough
-  {1, 3, 3.00, 2, 0, 0, 1, 0}, // yellow melone              Output 0:    type: 1=tomato
-  {1, 5, 3.00, 2, 0, 0, 1, 0}, // green melone               Output 1:    type: 1=banana
-  {1, 1, 0.01, 3, 0, 0, 0, 1}, // red raspberry              Output 2:    type: 1=melone
-  {1, 5, 0.01, 3, 0, 0, 0, 1}, // green raspberry            Output 3:    type: 1=raspberry
+  {1, 2, 0.050, 1, 1, 0, 0, 0}, // orange tomato               Input 0:   shape: 1=round, 2=oval    3=long
+  {1, 1, 0.050, 1, 1, 0, 0, 0}, // red tomato                  Input 1:   color: 1=red    2=orange  3=yellow  4=lightgreen 5=green
+  {3, 4, 0.200, 1, 0, 1, 0, 0}, // lightgreen banana           Input 2:  weight: in Kilogramms
+  {3, 3, 0.200, 1, 0, 1, 0, 0}, // yellow banana               Input 3: surface: 1=even   2=spoty   3=rough
+  {1, 5, 2.500, 2, 0, 0, 1, 0}, // green melon                Output 0:    type: 1=tomato
+  {1, 3, 3.000, 2, 0, 0, 1, 0}, // yellow melon               Output 1:    type: 1=banana
+  {2, 5, 0.002, 3, 0, 0, 0, 1}, // green raspberry            Output 2:    type: 1=melon
+  {2, 3, 0.005, 3, 0, 0, 0, 1}, // red raspberry              Output 3:    type: 1=raspberry
 };
 //--------------------------------------------------------------------
 const int num_of_test_data_set = 12; // length of table, count of object
@@ -47,17 +47,17 @@ float test_data_set[num_of_test_data_set][num_of_inputs] = { // input data to pr
   {3, 5, 0.150, 1}, // Input: green banana
   {3, 4, 0.170, 1}, // Input: lightgreen banana
   {3, 3, 0.200, 1}, // Input: yellow banana
-  {1, 3, 2.000, 2}, // Input: yellow melone
-  {1, 5, 2.500, 2}, // Input: green melone
-  {1, 4, 3.000, 2}, // Input: lightgreen melone
-  {1, 1, 0.005, 3}, // Input: red raspberry
-  {1, 5, 0.010, 3}, // Input: green raspberry
-  {1, 3, 0.020, 3}, // Input: yellow raspberry
+  {1, 4, 2.000, 2}, // Input: lightgreen melon
+  {1, 5, 2.500, 2}, // Input: green melon
+  {1, 3, 3.000, 2}, // Input: yellow melon
+  {2, 5, 0.002, 3}, // Input: green raspberry
+  {2, 2, 0.003, 3}, // Input: orange raspberry
+  {2, 3, 0.005, 3}, // Input: red raspberry
 };
 //--------------------------------------------------------------------
 float learn_rate = 0; // dynamic calculation
 int iterations_counter = 0;
-int maximum_iterations = 1500;
+int maximum_iterations = 1700;
 float accepted_error = 0.05;
 //-----------------------------------------------------------------------------------------------------------------
 void setup() {
@@ -320,90 +320,90 @@ void init_learned_weights() { // this is copy and paste from serial output all w
 
   Serial.println("Init weights by learned values");
 
-  weights[0][0] = 0.3100000;
-  weights[0][1] = -0.4100000;
-  weights[0][2] = -0.0200000;
-  weights[0][3] = -0.3900000;
+  weights[0][0] = 0.3070000;
+  weights[0][1] = -0.4110000;
+  weights[0][2] = -0.0190000;
+  weights[0][3] = -0.3860000;
   weights[0][4] = -0.2900000;
   weights[0][5] = -0.2600000;
-  weights[1][0] = 1.9146098;
-  weights[1][1] = -0.0900000;
-  weights[1][2] = -0.4000000;
-  weights[1][3] = -1.3004496;
-  weights[1][4] = -0.2000000;
-  weights[1][5] = -2.1343200;
-  weights[2][0] = 1.8776665;
-  weights[2][1] = 0.0399900;
-  weights[2][2] = 0.9593400;
-  weights[2][3] = -1.4246271;
-  weights[2][4] = 0.1100000;
-  weights[2][5] = 0.1638652;
-  weights[3][0] = -0.2000000;
-  weights[3][1] = -0.2900000;
-  weights[3][2] = 1.8571056;
-  weights[3][3] = -0.4700000;
-  weights[3][4] = 0.1800000;
-  weights[3][5] = -0.8590795;
-  weights[4][0] = 0.3900000;
-  weights[4][1] = -0.0243500;
-  weights[4][2] = -1.0992579;
-  weights[4][3] = 0.6443516;
-  weights[4][4] = 0.1000000;
-  weights[4][5] = -0.0700000;
-  weights[5][0] = 0.2499999;
-  weights[5][1] = -0.5200000;
-  weights[5][2] = 0.4100000;
-  weights[5][3] = 2.0947673;
-  weights[5][4] = -0.7400000;
-  weights[5][5] = -1.0400000;
-  weights[6][0] = 0.2000000;
-  weights[6][1] = 2.9162006;
-  weights[6][2] = 0.0100000;
-  weights[6][3] = -0.1300000;
-  weights[6][4] = 0.3100000;
-  weights[6][5] = -1.5900002;
-  weights[7][0] = 0.4100000;
-  weights[7][1] = -0.0900000;
-  weights[7][2] = -0.3100000;
-  weights[7][3] = 0.2600000;
-  weights[7][4] = 0.1400000;
-  weights[7][5] = -0.0500000;
-  weights[8][0] = 0.0000000;
-  weights[8][1] = 0.0600000;
-  weights[8][2] = -4.0821800;
-  weights[8][3] = 0.1100000;
-  weights[8][4] = 0.9154006;
-  weights[8][5] = 0.5500001;
-  weights[9][0] = 0.3800000;
-  weights[9][1] = -2.5313003;
-  weights[9][2] = -1.1385400;
-  weights[9][3] = -2.0793800;
-  weights[9][4] = 0.6590644;
-  weights[9][5] = 1.7255099;
-  weights[10][0] = -0.7297590;
-  weights[10][1] = -0.8068005;
-  weights[10][2] = -0.2300000;
-  weights[10][3] = -3.1058817;
-  weights[10][4] = 2.4448047;
-  weights[10][5] = -0.7493392;
-  weights[11][0] = -0.1359398;
-  weights[11][1] = 2.9837804;
-  weights[11][2] = -0.2900000;
-  weights[11][3] = -0.3100000;
-  weights[11][4] = -0.3537177;
-  weights[11][5] = -1.2900000;
-  weights[12][0] = 2.1682329;
-  weights[12][1] = -1.3599999;
-  weights[12][2] = -0.2900000;
-  weights[12][3] = -0.3500000;
-  weights[12][4] = -1.1086065;
-  weights[12][5] = -0.3700000;
-  weights[13][0] = -0.5200000;
-  weights[13][1] = -1.1099999;
-  weights[13][2] = -0.1500000;
-  weights[13][3] = 2.9565649;
-  weights[13][4] = 0.1800000;
-  weights[13][5] = -1.3313150;
+  weights[1][0] = 1.2261388;
+  weights[1][1] = -0.2051830;
+  weights[1][2] = -0.4010000;
+  weights[1][3] = -1.1931233;
+  weights[1][4] = -0.2040000;
+  weights[1][5] = -0.0550000;
+  weights[2][0] = 0.1131187;
+  weights[2][1] = -0.0630554;
+  weights[2][2] = 0.6822119;
+  weights[2][3] = -0.3971354;
+  weights[2][4] = 0.1150001;
+  weights[2][5] = 0.1570000;
+  weights[3][0] = -0.7516762;
+  weights[3][1] = -0.1218583;
+  weights[3][2] = 1.4061503;
+  weights[3][3] = -0.4750000;
+  weights[3][4] = 0.1769999;
+  weights[3][5] = 0.3210000;
+  weights[4][0] = 0.9943660;
+  weights[4][1] = 0.0764109;
+  weights[4][2] = 0.3159093;
+  weights[4][3] = 0.5785779;
+  weights[4][4] = 0.1000001;
+  weights[4][5] = -2.7262015;
+  weights[5][0] = 0.2530000;
+  weights[5][1] = -1.9464618;
+  weights[5][2] = 0.4120004;
+  weights[5][3] = 2.7413423;
+  weights[5][4] = -0.3246289;
+  weights[5][5] = -1.3170149;
+  weights[6][0] = 0.1990000;
+  weights[6][1] = 3.1707597;
+  weights[6][2] = 0.0150000;
+  weights[6][3] = -0.1350000;
+  weights[6][4] = 0.8870224;
+  weights[6][5] = -2.4173727;
+  weights[7][0] = 0.4130003;
+  weights[7][1] = -0.0920000;
+  weights[7][2] = -0.3110000;
+  weights[7][3] = 0.2610000;
+  weights[7][4] = 0.1360000;
+  weights[7][5] = -0.7659559;
+  weights[8][0] = -0.0020000;
+  weights[8][1] = -1.3724303;
+  weights[8][2] = -1.0836635;
+  weights[8][3] = -1.1072206;
+  weights[8][4] = 2.6649234;
+  weights[8][5] = -0.9105161;
+  weights[9][0] = 0.3760003;
+  weights[9][1] = -0.4260000;
+  weights[9][2] = -0.2880000;
+  weights[9][3] = -0.4398434;
+  weights[9][4] = -1.5145608;
+  weights[9][5] = 0.8766309;
+  weights[10][0] = -1.9008472;
+  weights[10][1] = -1.4211730;
+  weights[10][2] = -0.2310000;
+  weights[10][3] = -2.5104837;
+  weights[10][4] = 1.0648737;
+  weights[10][5] = 0.7633929;
+  weights[11][0] = 0.0209999;
+  weights[11][1] = 3.2043030;
+  weights[11][2] = -0.2880000;
+  weights[11][3] = -0.3110000;
+  weights[11][4] = -0.3540000;
+  weights[11][5] = -1.5178862;
+  weights[12][0] = 2.7435730;
+  weights[12][1] = -0.2812328;
+  weights[12][2] = -0.2910000;
+  weights[12][3] = -0.3020000;
+  weights[12][4] = -0.4610000;
+  weights[12][5] = -1.1105322;
+  weights[13][0] = -0.0568522;
+  weights[13][1] = -0.7329091;
+  weights[13][2] = -0.1530000;
+  weights[13][3] = 3.3463435;
+  weights[13][4] = 0.1770000;
+  weights[13][5] = -1.8109125;
 }
 //-----------------------------------------------------------------------------------------------------------------
 float create_random() { // random numbes beetwen -1 and +1
