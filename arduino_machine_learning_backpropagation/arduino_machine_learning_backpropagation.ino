@@ -11,6 +11,7 @@
 
 float inputs[num_of_inputs] = { };   // input neuron data
 float outputs[num_of_outputs] = { }; // output neuron data
+String objects[num_of_outputs] = {"Tomato", "Banana", "Melone", "Raspberry"}; // alias of the 4 output neurons
 //--------------------------------------------------------------------
 float weights[num_of_neurons][num_of_weights] = { //contains all weights and bias values
 
@@ -23,8 +24,6 @@ int max_gradient_y ; // y position in gradients table
 
 float gradients[num_of_neurons][num_of_weights] = { // values to search the highest improvement of error
 };
-//--------------------------------------------------------------------
-String objects[4] = {"Tomato", "Banana", "Melone", "Raspberry"}; // alias of the 4 output neurons
 //--------------------------------------------------------------------
 const int num_of_data_set = 8; //length of table
 // a googd way for better results is format the input data into a range between -1 to +1 for example.
