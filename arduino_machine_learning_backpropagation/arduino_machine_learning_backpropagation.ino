@@ -31,27 +31,30 @@ float training_data_set[num_of_training_data_set][num_of_inputs + num_of_outputs
   //5x input           |4x output
   {1, 2, 0.030, 1, 2.0, 1, 0, 0, 0}, // orange tomato              | Input 0 | Input 1      | Input 2    | Input 3 | Input 4     | Output 0  | Output 1 | Output 2  | Output 3    |
   {1, 1, 0.050, 1, 2.5, 1, 0, 0, 0}, // red tomato                 | 1=round | 1=red        | weight in  | 1=even  | Length in   | 1=tomato  | 1=banana | 1=melon   | 1=raspberry |
-  {3, 4, 0.200, 1, 18,  0, 1, 0, 0}, // lightgreen banana          | 2=oval  | 2=orange     | kilogramms | 2=spoty | centimeters |           |          |           |             |
-  {3, 3, 0.200, 1, 20,  0, 1, 0, 0}, // yellow banana              | 3=long  | 3=yellow     |            | 3=rough |             |           |          |           |             |
-  {1, 5, 2.500, 2, 16,  0, 0, 1, 0}, // green melon                |         | 4=lightgreen |            |         |             |           |          |           |             |
-  {1, 3, 3.000, 2, 18,  0, 0, 1, 0}, // yellow melon               |         | 5=green      |            |         |             |           |          |           |             |
-  {2, 5, 0.002, 3, 0.5, 0, 0, 0, 1}, // green raspberry            |         |              |            |         |             |           |          |           |             |
+  {3, 4, 0.200, 1,  18, 0, 1, 0, 0}, // lightgreen banana          | 2=oval  | 2=orange     | kilogramms | 2=spoty | centimeters |           |          |           |             |
+  {3, 3, 0.200, 1,  20, 0, 1, 0, 0}, // yellow banana              | 3=long  | 3=yellow     |            | 3=rough |             |           |          |           |             |
+  {1, 5, 2.500, 2,  16, 0, 0, 1, 0}, // green melon                | 4=bulp  | 4=lightgreen |            | 4=hairy |             |           |          |           |             |
+  {1, 3, 3.000, 2,  18, 0, 0, 1, 0}, // yellow melon               |         | 5=green      |            |         |             |           |          |           |             |
+  {2, 5, 0.002, 3, 0.5, 0, 0, 0, 1}, // green raspberry            |         | 6=brown      |            |         |             |           |          |           |             |
   {2, 3, 0.005, 3, 1.0, 0, 0, 0, 1}, // red raspberry              |         |              |            |         |             |           |          |           |             |
 };
 //--------------------------------------------------------------------
-const int num_of_test_data_set = 4; // length of table, count of object
+const int num_of_test_data_set = 7; // length of table, count of object
 float test_data_set[num_of_test_data_set][num_of_inputs] = { // input data to predict
   //5x input
-  {1, 3, 0.025, 1,  1.8}, // Input: yellow tomato
-  {3, 5, 0.170, 1,   16}, // Input: green banana
-  {1, 4, 2.000, 2,   14}, // Input: lightgreen melon
-  {2, 2, 0.003, 3, 0.75}, // Input: orange raspberry
+  {1, 3, 0.025, 1,  1.8}, // Input: round yellow tomato
+  {2, 4, 0.020, 1,  1.5}, // Input: small oval lightgreen tomato
+  {3, 5, 0.150, 1,   12}, // Input: small green banana
+  {1, 4, 2.000, 2,   14}, // Input: round lightgreen melon
+  {2, 5, 2.300, 2,   16}, // Input: oval green melon
+  {2, 1, 0.005, 3,  1.5}, // Input: oval big red raspberry
+  {2, 2, 0.003, 3, 0.75}, // Input: oval orange raspberry
 };
 //--------------------------------------------------------------------
 float learn_rate = 0; // dynamic calculation
 int iterations_counter = 0;
 int maximum_iterations = 2000;
-float accepted_error = 0.05;
+float accepted_error = 0.04;
 int learn_extra_rounds = 3; //if the software cant find a global minimum > init the weights new.
 //-----------------------------------------------------------------------------------------------------------------
 void setup() {
