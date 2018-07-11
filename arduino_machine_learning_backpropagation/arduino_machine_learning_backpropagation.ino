@@ -54,7 +54,7 @@ float test_data_set[num_of_test_data_set][num_of_inputs] = { // input data to pr
 float learn_rate = 0; // dynamic calculation
 int iterations_counter = 0;
 int maximum_iterations = 2000;
-float accepted_error = 0.04;
+float accepted_error = 0.05;
 int learn_extra_rounds = 3; //if the software cant find a global minimum > init the weights new.
 //-----------------------------------------------------------------------------------------------------------------
 void setup() {
