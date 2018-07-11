@@ -1,13 +1,15 @@
-//Demo KNN Classification of Fruits
-//Machine Learning with Backpropagation Learning Mode
-//Make what you want with this sourcecode :-)
-//Thinking about: shit in > shit out
+//###########################################################################
+//####       Demo KNN Classification of Fruits & Vegetables              ####
+//####     Machine Learning with Backpropagation Learning Mode           ####
+//####        Make what you want with this sourcecode :-)                ####
+//####            Thinking about: shit in > shit out                     ####
+//###########################################################################
 
 #define num_of_inputs 5   // neurons
 #define num_of_hiddens 5  // neurons
 #define num_of_outputs 4  // neurons
-#define num_of_weights 6  // 1 x neuron = input, input, input, input, input, output
-#define num_of_neurons 14 // neurons
+#define num_of_weights 6  // 1 x neuron = input, input, input, input, input, bias
+#define num_of_neurons 14 // total neurons
 #define num_of_layers 3   // output, hidden 2, hidden 1
 
 float inputs[num_of_inputs] = { };   // input neuron data
@@ -50,13 +52,14 @@ float test_data_set[num_of_test_data_set][num_of_inputs] = { // input data to pr
   {2, 1, 0.005, 3,  1.5}, // Input: oval big red raspberry
   {2, 2, 0.003, 3, 0.75}, // Input: oval orange raspberry
 };
-//--------------------------------------------------------------------
+//######################################################################################################
 float learn_rate = 0; // dynamic calculation
 int iterations_counter = 0;
 int maximum_iterations = 2000;
 float accepted_error = 0.05;
 int learn_extra_rounds = 3; //if the software cant find a global minimum > init the weights new.
-//-----------------------------------------------------------------------------------------------------------------
+float threshold = 0.85; //for a good prediction
+//######################################################################################################
 void setup() {
 
   Serial.begin(9600);
@@ -109,10 +112,7 @@ void start_predict() {
     Serial.print(" / Out 2 = " + String(outputs[2]));
     Serial.print(" / Out 3 = " + String(outputs[3]));
 
-    if (outputs[0] >= 0.85) Serial.print(" = " + objects[0]);
-    if (outputs[1] >= 0.85) Serial.print(" = " + objects[1]);
-    if (outputs[2] >= 0.85) Serial.print(" = " + objects[2]);
-    if (outputs[3] >= 0.85) Serial.print(" = " + objects[3]);
+    Serial.print(" = " + max_classification());
     Serial.println();
   }
 
@@ -127,15 +127,28 @@ void start_predict() {
     Serial.print(" / Out 2 = " + String(outputs[2]));
     Serial.print(" / Out 3 = " + String(outputs[3]));
 
-    if (outputs[0] >= 0.85) Serial.print(" = " + objects[0]);
-    if (outputs[1] >= 0.85) Serial.print(" = " + objects[1]);
-    if (outputs[2] >= 0.85) Serial.print(" = " + objects[2]);
-    if (outputs[3] >= 0.85) Serial.print(" = " + objects[3]);
+    Serial.print(" = " + max_classification());
     Serial.println();
   }
 
   Serial.println(F("Stop  Predict"));
   Serial.println(F("------------------------"));
+}
+//-----------------------------------------------------------------------------------------------------------------
+String max_classification() {
+
+  float result = 0;
+  String alias;
+
+  for (int i = 0; i < num_of_outputs; i++) {
+    if (outputs[i] > result) {
+      result = outputs[i];
+      alias = objects[i];
+    }
+  }
+
+  if (result < threshold) alias = F("n/a");
+  return alias;
 }
 //-----------------------------------------------------------------------------------------------------------------
 void start_learning() {
@@ -145,7 +158,7 @@ void start_learning() {
   float total_error;
   int used_layer = 0;
 
-  do { //search for local minimum
+  do { //search for global minimum
 
     //Backpropagation: training the layers from back to front
     if (used_layer == 0)  calc_max_gradient(10, 13);     // number of output layer  = from 10 to 13 neuron
@@ -186,7 +199,7 @@ void start_learning() {
   total_error = calc_error();
   Serial.println("Total Error=" + String(total_error, 5));
   if (total_error < accepted_error)Serial.println(F("Result OK"));
-  if (iterations_counter > maximum_iterations)Serial.println(F("End:Reached the maximum Iterations"));
+  if (iterations_counter > maximum_iterations)Serial.println(F("End: Reached the maximum Iterations"));
 }
 //-----------------------------------------------------------------------------------------------------------------
 void calc_max_gradient(int from_neuron, int to_neuron) { // search max. gradient of one layer
