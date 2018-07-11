@@ -59,6 +59,7 @@ int maximum_iterations = 2000;
 float accepted_error = 0.05;
 int learn_extra_rounds = 3; //if the software cant find a global minimum > init the weights new.
 float threshold = 0.85; //for a good prediction
+unsigned long time;
 //######################################################################################################
 void setup() {
 
@@ -178,6 +179,7 @@ void start_learning() {
 
     int result = iterations_counter % 25;//every 25 iterations
     if (result == 0) {
+      runtime();
       Serial.println("Trained Layer=" + String(used_layer));
       Serial.println("Iterations=" + String(iterations_counter));
       Serial.println("Total Error=" + String(total_error, 5));
@@ -196,6 +198,7 @@ void start_learning() {
   show_weights();
 
   Serial.println(F("Done Learning"));
+  runtime();
   total_error = calc_error();
   Serial.println("Total Error=" + String(total_error, 5));
   if (total_error < accepted_error)Serial.println(F("Result OK"));
@@ -484,6 +487,19 @@ float create_random() { // random numbes beetwen -1 and +1
   randNum /= 1000;
   randNum -= 0.5;
   return randNum;
+}
+//-----------------------------------------------------------------------------------------------------------------
+void runtime() {
+
+  unsigned long time = millis() / 1000;
+  Serial.print(F("Runtime="));
+  if (time < 60) {
+    Serial.println(String(time) + "sec");
+  }
+  else {
+    float minute = float(time) / 60;
+    Serial.println(String(minute) + "min");
+  }
 }
 //-----------------------------------------------------------------------------------------------------------------
 
