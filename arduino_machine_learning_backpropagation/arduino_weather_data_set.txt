@@ -1,0 +1,150 @@
+//###########################################################################
+//####        Demo KNN Classification of Weather Data Set                ####
+//####             Training Data Set / Test Dat Set                      ####
+//####        Make what you want with this sourcecode :-)                ####
+//####            Thinking about: shit in > shit out                     ####
+//###########################################################################
+
+
+//--------------------------------------------------------------------
+// Training Data:                   the input 0-3 parameters are differences to the T before (T=6h) > outputs are tendence to:
+
+//5x input           |4x output
+{  1.5,  3, -1,  0, 1, 1, 0, 0, 0}, // good      | Input 0  | Input 1   | Input 2   | Input 3   | Input 4   | Output 0 | Output 1 | Output 2 | Output 3 |
+{  3.0,  3, -1,  0, 2, 1, 0, 0, 0}, //           |          |           |           |           |           | 1=good   | 1=still  | 1=rainy  | 1=stormy |
+{ -1.5,  3, -1,  0, 3, 1, 0, 0, 0}, //           | Air-Temp.| Air-Press.| Windspeed | Wind-     | 1=Spring  |          |          |          |          |
+{ -3.0,  3, -1,  0, 4, 1, 0, 0, 0}, //           | celcius  | mBar      | km/h      | direction | 2=Summmer |          |          |          |          |
+{    0,  0,  0,  0, 1, 0, 1, 0, 0}, // still     |          |           |           | degrees   | 3=Fall    |          |          |          |          |
+{    0,  0,  0,  0, 2, 0, 1, 0, 0}, //           |          |           |           |           | 4=Winter  |          |          |          |          |
+{    0,  0,  0,  0, 3, 0, 1, 0, 0}, //           |          |           |           |           |           |          |          |          |          |
+{    0,  0,  0,  0, 4, 0, 1, 0, 0}, //           |          |           |           |           |           |          |          |          |          |
+{ -1.0, -3,  2, 10, 1, 0, 0, 1, 0}, // rainy
+{ -1.5, -3,  2, 10, 2, 0, 0, 1, 0},
+{  1.5, -3,  2, 10, 3, 0, 0, 1, 0},
+{  1.0, -3,  2, 10, 4, 0, 0, 1, 0},
+{ -1.5, -6, 10, 20, 1, 0, 0, 0, 1}, // stormy
+{ -3.0, -6, 10, 20, 2, 0, 0, 0, 1},
+{  3.0, -6, 10, 20, 3, 0, 0, 0, 1},
+{  1.5, -6, 10, 20, 4, 0, 0, 0, 1},
+
+//--------------------------------------------------------------------
+// Test Data:
+
+//5x input
+{ -0.5,  2.0,  0.5, -1, 1}, // good in spring
+{  0.1, -0.1, -0.1,  1, 1}, // still in spring
+{ -0.5, -2.0,  1.0,  6, 1}, // rain in spring
+{ -2.0, -5.0,  7.0, 16, 1}, // storm in spring
+
+{  2.0,  2.0,    0,  2, 2}, // good in summer
+{ -0.1,  0.1,  0.1,  1, 2}, // still in summer
+{ -0.5,   -2,  2.0,  5, 2}, // rain in summer
+{ -3.5,   -7,    9, 19, 2}, // storm summer
+
+{ -2.0,  2.0,    0,  3, 3}, // good in fall
+{ -0.1,  0.1,  0.1,  1, 3}, // still in fall
+{  2.0,   -2,  2.5,  8, 3}, // rain in fall
+{  3.5,   -7,   11, 18, 3}, // storm fall
+
+{ -3.2,  2.8,    0,  1, 4}, // good in winter
+{  0.2, -0.2,  0.1,  1, 4}, // still in winter
+{  1.5, -2.5,    1,  8, 4}, // rain in winter
+{  2.5, -7.0,   12, 17, 4}, // storm winter
+
+//-----------------------------------------------------------------------------------------------------------------
+//Formats:
+//             (column, multiplicator, offset)
+format_the_input_data(0, 1.0,  0); // format the input data into a range between -1 to +1
+format_the_input_data(1, 0.5,  0); // format the input data into a range between -1 to +1
+format_the_input_data(2, 0.5,  0); // format the input data into a range between -1 to +1
+format_the_input_data(3, 0.1,  0); // format the input data into a range between -1 to +1
+format_the_input_data(4, 1.0, -2); // format the input data into a range between -1 to +1
+
+//-----------------------------------------------------------------------------------------------------------------
+//Weights:
+
+weights[0][0] = 0.0246321;
+weights[0][1] = -1.9239095;
+weights[0][2] = -0.0190000;
+weights[0][3] = -0.3860000;
+weights[0][4] = -0.1471026;
+weights[0][5] = -1.0978334;
+weights[1][0] = -0.1432459;
+weights[1][1] = -3.4778428;
+weights[1][2] = -3.3715386;
+weights[1][3] = -0.3990000;
+weights[1][4] = -0.1208463;
+weights[1][5] = 2.1220815;
+weights[2][0] = -0.0241743;
+weights[2][1] = -1.8063695;
+weights[2][2] = -0.6710852;
+weights[2][3] = -5.4625463;
+weights[2][4] = -0.0538539;
+weights[2][5] = 1.2573749;
+weights[3][0] = -0.1960000;
+weights[3][1] = -2.6217976;
+weights[3][2] = 0.3229998;
+weights[3][3] = -0.4750000;
+weights[3][4] = -0.1054575;
+weights[3][5] = 1.2693186;
+weights[4][0] = 0.0813684;
+weights[4][1] = -2.1947298;
+weights[4][2] = -1.7000058;
+weights[4][3] = 0.1380000;
+weights[4][4] = 0.0340013;
+weights[4][5] = -0.4207729;
+weights[5][0] = -1.6588523;
+weights[5][1] = -0.0420000;
+weights[5][2] = 3.8672462;
+weights[5][3] = 1.1422012;
+weights[5][4] = -1.0357457;
+weights[5][5] = -1.3270273;
+weights[6][0] = 0.1560128;
+weights[6][1] = 3.4277234;
+weights[6][2] = -0.2912726;
+weights[6][3] = 1.8450210;
+weights[6][4] = 0.3149997;
+weights[6][5] = -3.2071376;
+weights[7][0] = 0.4130000;
+weights[7][1] = -0.0920000;
+weights[7][2] = -0.3110000;
+weights[7][3] = 0.2610000;
+weights[7][4] = 0.1360000;
+weights[7][5] = -2.0797870;
+weights[8][0] = 2.2474506;
+weights[8][1] = -3.3920083;
+weights[8][2] = -0.7445644;
+weights[8][3] = 2.0455022;
+weights[8][4] = 0.2320000;
+weights[8][5] = -2.1523912;
+weights[9][0] = 0.3760000;
+weights[9][1] = -1.4724071;
+weights[9][2] = -0.2880000;
+weights[9][3] = -2.3762746;
+weights[9][4] = -0.2500000;
+weights[9][5] = 1.2638724;
+weights[10][0] = -0.1940000;
+weights[10][1] = -2.3418167;
+weights[10][2] = -0.2310000;
+weights[10][3] = -2.2779958;
+weights[10][4] = 0.8701977;
+weights[10][5] = 0.7389258;
+weights[11][0] = 2.9306872;
+weights[11][1] = 1.4321954;
+weights[11][2] = -0.2880000;
+weights[11][3] = -0.3110000;
+weights[11][4] = -0.3540000;
+weights[11][5] = -2.7562261;
+weights[12][0] = -2.9110792;
+weights[12][1] = 2.7512815;
+weights[12][2] = -0.2910000;
+weights[12][3] = -0.3020000;
+weights[12][4] = -0.4610000;
+weights[12][5] = -1.3172143;
+weights[13][0] = 0.1169998;
+weights[13][1] = -0.3990000;
+weights[13][2] = -0.1530000;
+weights[13][3] = 3.2276306;
+weights[13][4] = 0.1239149;
+weights[13][5] = -1.6328176;
+
