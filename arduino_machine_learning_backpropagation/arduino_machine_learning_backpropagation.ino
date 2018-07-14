@@ -53,7 +53,7 @@ float test_data_set[num_of_test_data_set][num_of_inputs] = { // input data to pr
   {2, 2, 0.003, 3, 0.75}, // Input: oval orange raspberry
 };
 //######################################################################################################
-float learn_rate = 0; // dynamic calculation
+float learn_rate = 0.7; // dynamic calculation
 int iterations_counter = 0;
 int maximum_iterations = 2000;
 float accepted_error = 0.05;
@@ -74,8 +74,8 @@ void setup() {
   format_the_input_data(4, 0.1, -1.0); // format the input data into a range between -1 to +1
 
   //test_sigmoid_function();
-  //init_random_weights(); // start with random values > start from scratch
-  init_learned_weights(); //start with allready learned values
+  init_random_weights(); // start with random values > start from scratch
+  //init_learned_weights(); //start with allready learned values
 }
 //-----------------------------------------------------------------------------------------------------------------
 void loop() {
@@ -209,9 +209,8 @@ void calc_max_gradient(int from_neuron, int to_neuron) { // search max. gradient
 
   float total_error = calc_error();
   float max_steigung = 0;
-  to_neuron++;
 
-  for ( int y = from_neuron; y < to_neuron; y++) {
+  for ( int y = from_neuron; y <= to_neuron; y++) {
     for ( int x = 0; x < num_of_weights; x++) {
 
       weights[y][x] += learn_rate;
