@@ -53,13 +53,14 @@ float test_data_set[num_of_test_data_set][num_of_inputs] = { // input data to pr
   {2, 2, 0.003, 3, 0.75}, // Input: oval orange raspberry
 };
 //######################################################################################################
-float learn_rate = 0.7; // dynamic calculation
+float learn_rate = 0; // dynamic calculation
 int iterations_counter = 0;
 int maximum_iterations = 2000;
 float accepted_error = 0.05;
 int learn_extra_rounds = 3; //if the software cant find a global minimum > init the weights new.
 float threshold = 0.85; //for a good prediction
 unsigned long time;
+byte use_init_weights = 0;// 0 = init by random weights, 1 = init by learned weights
 //######################################################################################################
 void setup() {
 
@@ -74,8 +75,8 @@ void setup() {
   format_the_input_data(4, 0.1, -1.0); // format the input data into a range between -1 to +1
 
   //test_sigmoid_function();
-  init_random_weights(); // start with random values > start from scratch
-  //init_learned_weights(); //start with allready learned values
+  if (use_init_weights == 0)init_random_weights(); // start with random values > start from scratch
+  if (use_init_weights == 1)init_learned_weights(); //start with allready learned values
 }
 //-----------------------------------------------------------------------------------------------------------------
 void loop() {
