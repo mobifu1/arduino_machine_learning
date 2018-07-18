@@ -1,5 +1,7 @@
 //##################################################################
 //###                  Arduino Q-Learning                        ###
+//###  The play-field is 4x4 fields, the software will search    ###
+//###              the best way to the target                    ###
 //##################################################################
 
 //#include <Adafruit_GFX.h>    // Core graphics library
@@ -61,13 +63,13 @@ int delay_ms = 100;
 #define lines_of_fields 4
 #define culumns_of_fields 4
 
-int rewards[total_fields][total_fields] = {};
+int rewards[total_fields][total_fields] = {};//create reward field by algo
 int weights [total_fields][total_fields] = {};
 //-----------------------------------------
-int start_field = 0;
-int target_field = 14;
+int start_field = 0; // the start position
+int target_field = 14; // target position
 int current_field = start_field;
-int last_field = 0; // only for update display
+int last_field = 0; // only for display update
 int action;
 int num_random;
 int num_max;
@@ -94,7 +96,7 @@ void setup() {
   create_target_field(target_field);
   //show_rewards();
   create_nogo_field(10);
-  //create_nogo_field(13);
+  create_nogo_field(13);
   show_rewards();
   init_weights_by_zero();
   set_field_frames();
@@ -105,14 +107,15 @@ void setup() {
 void loop() {
 
   Serial.println(F("Start:"));
+
   while (n < 6) {
-    while (current_field != target_field) {
+
+    while (current_field != target_field) { // search for target field by random action
 
       set_field_information(current_field, 1);
-      num_random = random(0, total_fields - 1); //  random(min, max)
 
-      while (rewards[current_field][num_random] < 0) {
-        num_random = random(0, total_fields - 1); //  random(min, max)
+      while (rewards[current_field][num_random] < 0) { // search for neighbor by random
+        num_random = random(0, (total_fields)); //  random(min, max)
       }
 
       action = num_random;
@@ -139,7 +142,7 @@ void loop() {
   //--------------------------------------------
 
   current_field = 0;
-  while (current_field != target_field) {
+  while (current_field != target_field) { // search for best way to target
 
     set_field_information(current_field, 1);
     num_max = weights[current_field][0];
