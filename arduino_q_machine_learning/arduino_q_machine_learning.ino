@@ -54,49 +54,18 @@ Adafruit_TFTLCD tft(LCD_CS, LCD_CD, LCD_WR, LCD_RD, LCD_RESET);
 int x_size = 240;
 int y_size = 320;
 int rotation = 0;
-int size_fields = 80;//tft pixel
+int size_fields = 60;//tft pixel
 int delay_ms = 100;
 //-------------------------------------------------------------------------------
-#define total_fields 8  //16
-#define lines_of_fields 2 //4
-#define culumns_of_fields 4 //4
+#define total_fields 16
+#define lines_of_fields 4
+#define culumns_of_fields 4
 
-int rewards[total_fields][total_fields] =
-{
-  { -1,  0, -1, -1, -1, -1,  -1, -1},
-  {  0, -1, -1,  0, -1, -1,  -1, -1},
-  { -1, -1, -1, -1,  0, -1,  -1, -1},
-  { -1,  0, -1, -1, -1,  0,  -1, -1},
-  { -1, -1,  0, -1, -1,  0, 100, -1},
-  { -1, -1, -1,  0,  0, -1,  -1,  0},
-  { -1, -1, -1, -1, -1, -1,  -1, -1},
-  { -1, -1, -1, -1, -1,  0, 100, -1}
-};
-
-//  { -1,  0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,  -1, -1},
-//  {  0, -1,  0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,  -1, -1},
-//  { -1,  0, -1,  0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,  -1, -1},
-//  { -1, -1,  0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,  -1, -1},
-//
-//  {  0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,  -1, -1},
-//  { -1,  0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,  -1, -1},
-//  { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,  -1, -1},
-//  { -1, -1, -1,  0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,  -1, -1},
-//
-//  { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,  -1, -1},
-//  { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,  -1, -1},
-//  { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,  -1, -1},
-//  { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,  -1, -1},
-//
-//  { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,  -1, -1},
-//  { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,  -1, -1},
-//  { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 100, -1},
-//  { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,  -1, -1},
-
+int rewards[total_fields][total_fields] = {};
 int weights [total_fields][total_fields] = {};
 //-----------------------------------------
 int start_field = 0;
-int target_field = 6;// 15
+int target_field = 14;
 int current_field = start_field;
 int last_field = 0; // only for update display
 int action;
@@ -118,8 +87,18 @@ void setup() {
   delay(2000);
   tft.fillScreen(BLACK);
   Serial.begin(9600);
+
+  // init fields:
+  create_reward_fields();
+  //show_rewards();
+  create_target_field(target_field);
+  //show_rewards();
+  create_nogo_field(10);
+  //create_nogo_field(13);
+  show_rewards();
   init_weights_by_zero();
-  display_field_frames();
+  set_field_frames();
+
   delay(1000);
 }
 //#############################################################################################################
@@ -129,11 +108,11 @@ void loop() {
   while (n < 6) {
     while (current_field != target_field) {
 
-      display_field_information(current_field, 1);
-      num_random = random(0, 7);  //  random(min, max)
+      set_field_information(current_field, 1);
+      num_random = random(0, total_fields - 1); //  random(min, max)
 
       while (rewards[current_field][num_random] < 0) {
-        num_random = random(0, 7);  //  random(min, max)
+        num_random = random(0, total_fields - 1); //  random(min, max)
       }
 
       action = num_random;
@@ -150,7 +129,7 @@ void loop() {
       delay(delay_ms);
     }
 
-    display_field_information(target_field, 1);
+    set_field_information(target_field, 1);
     delay(delay_ms);
     n++;
     current_field = 0;
@@ -162,7 +141,7 @@ void loop() {
   current_field = 0;
   while (current_field != target_field) {
 
-    display_field_information(current_field, 1);
+    set_field_information(current_field, 1);
     num_max = weights[current_field][0];
     index = 0;
 
@@ -178,19 +157,56 @@ void loop() {
   }
 
   //--------------------------------------------
-  display_field_information(target_field, 1);
+  set_field_information(target_field, 1);
 
-  //Serial.println(F("End"));
-  //show_weights();
+  Serial.println(F("End"));
+  show_weights();
 
   delay(delay_ms);
-  display_way_information();//best way
+  set_way_information();//best way
 
   for (;;) {
     // endless loop
   }
 }
 //#############################################################################################################
+void create_reward_fields() {
+
+  for ( int y = 0; y < total_fields; y++) {
+    for ( int x = 0; x < total_fields; x++) {
+      rewards[y][x] = -1; //default value
+
+      if (x == y + culumns_of_fields || x == y - culumns_of_fields) rewards[y][x] = 0; // 4 columns neighbor
+
+      if (x == y + 1) { // direct neighbor ?
+        int neighbor_1 = x % culumns_of_fields; //modulo
+        int neighbor_2 = y % culumns_of_fields;
+        if (abs(neighbor_1 - neighbor_2) == 1)  rewards[y][x] = 0; // both values in the same column
+      }
+
+      if (x == y - 1) { // direct neighbor ?
+        int neighbor_1 = x % culumns_of_fields; //modulo
+        int neighbor_2 = y % culumns_of_fields;
+        if (abs(neighbor_1 - neighbor_2) == 1)  rewards[y][x] = 0; // both values in the same column
+      }
+    }
+  }
+}
+//--------------------------------------------------------------------------------------------------------------
+void create_target_field(int target) {
+
+  for ( int y = 0; y < total_fields; y++) {
+    if (rewards[y][target] == 0) rewards[y][target] = 100;
+  }
+}
+//--------------------------------------------------------------------------------------------------------------
+void create_nogo_field(int nogo) {
+
+  for ( int y = 0; y < total_fields; y++) {
+    rewards[y][nogo] = -1;
+  }
+}
+//--------------------------------------------------------------------------------------------------------------
 void init_weights_by_zero() {
 
   Serial.println(F("Init weights by zero"));
@@ -215,12 +231,25 @@ void show_weights() {
   Serial.println();
 }
 //--------------------------------------------------------------------------------------------------------------
-void display_way_information() {
+void show_rewards() {
+
+  Serial.println(F("Show rewards:"));
+  for ( int y = 0; y < total_fields; y++) {
+    Serial.print("{");
+    for ( int x = 0; x < total_fields; x++) {
+      Serial.print(String(rewards[y][x]) + " , ");
+    }
+    Serial.println("}");
+  }
+  Serial.println();
+}
+//--------------------------------------------------------------------------------------------------------------
+void set_way_information() { //tft display
 
   int maximal_weight = 0;
   int copy_x = 0;
 
-  display_field_information(start_field, 0);
+  set_field_information(start_field, 0);
 
   for ( int y = 0; y < total_fields; y++) {
     for ( int x = 0; x < total_fields; x++) {
@@ -237,17 +266,17 @@ void display_way_information() {
 
       if (x == (total_fields - 1)) {
         //Serial.println("Maximum Weight:" + String(maximal_weight) + "," + String(y) + "," + String(copy_x));
-        display_field_information(copy_x, 0);
+        set_field_information(copy_x, 0);
         y = copy_x - 1;
       }
     }
     if (maximal_weight == 100)break;
   }
 
-  display_field_information(target_field, 0);
+  set_field_information(target_field, 0);
 }
 //--------------------------------------------------------------------------------------------------------------
-void display_field_information(int field_number, int clear_old_field) { //display the field  n=0-7
+void set_field_information(int field_number, int clear_old_field) { //display one field  n=0-7  ,tft display
 
   //Serial.println(F("Update Fields on TFT:"));
   int field_counter = 0;
@@ -269,7 +298,7 @@ void display_field_information(int field_number, int clear_old_field) { //displa
   last_field = field_number;
 }
 //--------------------------------------------------------------------------------------------------------------
-void clear_field_information(int field_number) { //clear one field  n=0-7
+void clear_field_information(int field_number) { //clear one field  n=0-7 ,tft display
 
   //Serial.println(F("Clear Fields on TFT:"));
   int field_counter = 0;
@@ -287,7 +316,7 @@ void clear_field_information(int field_number) { //clear one field  n=0-7
   }
 }
 //--------------------------------------------------------------------------------------------------------------
-void display_field_frames() {
+void set_field_frames() { //tft display
 
   //Serial.println(F("Create Fields on TFT:"));
 
