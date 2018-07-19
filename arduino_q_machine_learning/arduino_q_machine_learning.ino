@@ -95,6 +95,7 @@ void setup() {
   //show_rewards();
   create_target_field(target_field);
   //show_rewards();
+  create_nogo_field(3);
   create_nogo_field(10);
   create_nogo_field(13);
   show_rewards();
@@ -108,13 +109,13 @@ void loop() {
 
   Serial.println(F("Start:"));
 
-  while (n < 6) { // try's to find the best way
+  while (n < 6) { // try's to find the best way when the target is known
 
     while (current_field != target_field) { // search for target field by random action
 
       set_field_information(current_field, 1);
 
-      while (rewards[current_field][random_number] < 0) { // search for neighbor by random
+      while (rewards[current_field][random_number] < 0) { // search for neighbor to jump by random
         random_number = random(0, (total_fields)); //  random(min, max)
       }
 
@@ -138,35 +139,12 @@ void loop() {
     current_field = 0;
 
   }
-
   //--------------------------------------------
 
-  current_field = 0;
-  while (current_field != target_field) { // search for best way by weights table
-
-    set_field_information(current_field, 1);
-    maximum_weight = weights[current_field][0];
-    next_field = 0;
-
-    for (int i = 1; i < total_fields; i++) {
-      if (weights[current_field][i] > maximum_weight) {
-        maximum_weight = weights[current_field][i];
-        next_field = i;
-      }
-    }
-
-    current_field = next_field;
-    delay(delay_ms);
-  }
-
-  //--------------------------------------------
-  set_field_information(target_field, 1);
+  set_way_information();//best way
 
   Serial.println(F("End"));
   show_weights();
-
-  delay(delay_ms);
-  set_way_information();//best way
 
   for (;;) {
     // endless loop
