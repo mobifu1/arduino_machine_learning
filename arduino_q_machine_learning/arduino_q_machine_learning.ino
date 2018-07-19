@@ -71,10 +71,10 @@ int target_field = 14; // target position
 int current_field = start_field;
 int last_field = 0; // only for display update
 int action;
-int num_random;
-int num_max;
+int random_number;
+int maximum_weight;
 int n = 0;
-int index;
+int next_field;
 
 //Version:
 String sw_version = "Version: 0.1-Beta";
@@ -108,26 +108,26 @@ void loop() {
 
   Serial.println(F("Start:"));
 
-  while (n < 6) {
+  while (n < 6) { // try's to find the best way
 
     while (current_field != target_field) { // search for target field by random action
 
       set_field_information(current_field, 1);
 
-      while (rewards[current_field][num_random] < 0) { // search for neighbor by random
-        num_random = random(0, (total_fields)); //  random(min, max)
+      while (rewards[current_field][random_number] < 0) { // search for neighbor by random
+        random_number = random(0, (total_fields)); //  random(min, max)
       }
 
-      action = num_random;
-      num_max = weights[action][0];
+      action = random_number;
+      maximum_weight = weights[action][0];
 
       for (int i = 1; i < total_fields; i++) {
-        if (weights[action][i] > num_max) {
-          num_max = weights[action][i];
+        if (weights[action][i] > maximum_weight) {
+          maximum_weight = weights[action][i];
         }
       }
 
-      weights[current_field][action] = rewards[current_field][action] + 0.8 * num_max;
+      weights[current_field][action] = rewards[current_field][action] + 0.8 * maximum_weight;
       current_field = action;
       delay(delay_ms);
     }
@@ -142,20 +142,20 @@ void loop() {
   //--------------------------------------------
 
   current_field = 0;
-  while (current_field != target_field) { // search for best way to target
+  while (current_field != target_field) { // search for best way by weights table
 
     set_field_information(current_field, 1);
-    num_max = weights[current_field][0];
-    index = 0;
+    maximum_weight = weights[current_field][0];
+    next_field = 0;
 
     for (int i = 1; i < total_fields; i++) {
-      if (weights[current_field][i] > num_max) {
-        num_max = weights[current_field][i];
-        index = i;
+      if (weights[current_field][i] > maximum_weight) {
+        maximum_weight = weights[current_field][i];
+        next_field = i;
       }
     }
 
-    current_field = index;
+    current_field = next_field;
     delay(delay_ms);
   }
 
