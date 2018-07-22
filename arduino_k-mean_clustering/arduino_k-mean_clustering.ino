@@ -21,7 +21,7 @@ const int  k = 1; //number of clusters to divide the input data
 //K=3 > Variation=361.26  alfa=89.52421  diff=-0,08971 > optimum!!!                               /                    |
 //K=4 > Variation=437.32  alfa=89.47595  diff=-0,04826                                         X /_____________________|
 //--------------------------------------------------------------------
-float training_data_set[input_data][attributes] = { //input and output data to clustering
+float training_data_set[input_data][attributes] = { //input data to clustering
 
   {5.1, 3.5, 1.4, 0.2},
   {4.9, 3.0, 1.4, 0.2},
