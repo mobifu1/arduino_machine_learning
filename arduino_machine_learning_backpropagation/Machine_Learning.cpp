@@ -1,5 +1,5 @@
 //###########################################################################
-//####    Demo KNN Classification of Iris Data Set by Fisher 1936        ####
+//####    Demo ANN Classification of Iris Data Set by Fisher 1936        ####
 //####             Training Data Set / Test Dat Set                      ####
 //####        Make what you want with this sourcecode :-)                ####
 //####            Thinking about: shit in > shit out                     ####

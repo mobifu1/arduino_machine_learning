@@ -1,5 +1,5 @@
 //###########################################################################
-//####       Demo KNN Classification of Fruits & Vegetables              ####
+//####       Demo ANN Classification of Fruits & Vegetables              ####
 //####     Machine Learning with Backpropagation Learning Mode           ####
 //####        Make what you want with this sourcecode :-)                ####
 //####            Thinking about: shit in > shit out                     ####
