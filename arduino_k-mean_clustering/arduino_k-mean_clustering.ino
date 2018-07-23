@@ -177,7 +177,7 @@ void start_clustering(int input_data_set, int attribute_dat_set, int k_value) {
       }
       k_means[i][k_value] = cluster_number;
       minimum_value = 32768;
-      Serial.println("data set:" + String(i) + " class=" + String(k_means[i][k_value] ));
+      Serial.println("Data set:" + String(i) + " class=" + String(k_means[i][k_value] ));
     }
 
 
@@ -220,16 +220,14 @@ void start_clustering(int input_data_set, int attribute_dat_set, int k_value) {
   //show_k_means_table(input_data_set, k_value);
   //show_cluster_table(k_value, attribute_dat_set);
 
-  measure_varianz(input_data_set, attribute_dat_set, k_value);
+  measure_variation(input_data_set, attribute_dat_set, k_value);
 }
 //-----------------------------------------------------------------------------------------------------------------
-void measure_varianz(int input_data_set, int attribute_dat_set, int k_value) {
+void measure_variation(int input_data_set, int attribute_dat_set, int k_value) {
 
   //Ziel von k-Means ist es, den Datensatz so in k Partitionen zu teilen,
   //dass die Summe der quadrierten Abweichungen von den Cluster-Schwerpunkten minimal ist.
   //Mathematisch entspricht dies der Optimierung der Funktion
-
-  Serial.println("measure variation:");
 
   float result = 0;
   float variation[input_data_set] = {}; //variation of input data to the cluster centres
