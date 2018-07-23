@@ -12,15 +12,15 @@
 
 #define input_data 48
 #define attributes 4
-const int  k = 3; //number of clusters to divide the input data
-
-//Elbow-Plot X,Y:                                                                                                        |Y
-//K=0 > Variation=0                                                                                  alfa                |
-//K=1 > Variation=96.39.  alfa=89.405605                                                              /                  |
-//K=2 > Variation=198.49  alfa=89.422703  diff= 0.017098                                             /                   |
-//K=3 > Variation=245.34  alfa=89.299426  diff=−0.123277 > optimum!!!                               /                    |
-//K=4 > Variation=279.51  alfa=89,180109  diff=−0.119317                                         X /_____________________|
-//K=5 > Variation=328.03  alfa=89.126660  diff=−0.053449
+const int  k = 6; //number of clusters to divide the input data
+//                                                                                         Elbow-Plot:                 |Y
+//Elbow-Plot X,Y:                                                                                           /          |
+//K=0 > Variation=0                                                                                  _____ /           |
+//K=1 > Variation=96.39.  alfa=89.40560                                                             /                  |
+//K=2 > Variation=198.49  alfa=89.43893  diff=+0,03333                                             /  alfa             |
+//K=3 > Variation=245.34  alfa=88.77744  diff=−0,66149 > optimum!!!                               /                    |
+//K=4 > Variation=279.51  alfa=88.32376  diff=−0,45368                                         X /_____________________|
+//K=5 > Variation=328.03  alfa=88.81937  diff=+0,49561
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 float training_data_set[input_data][attributes] = { //input data to clustering
 
@@ -157,8 +157,8 @@ void start_clustering(int input_data_set, int attribute_dat_set, int k_value) {
       }
     }
 
-    show_cluster_table(k_value, attribute_dat_set);
     show_k_means_table(input_data_set, k_value);
+    show_cluster_table(k_value, attribute_dat_set);
 
     //--------------------------------------------------------
 
@@ -252,7 +252,7 @@ void measure_variation(int input_data_set, int attribute_dat_set, int k_value) {
     tolal_variation += variation[i];
   }
   Serial.println("Total Variation:" + String(tolal_variation) + "  K=" + String(k_value)); //you need an elbow plot to check the best k-value by variaton
-  calculate_gradient(k_value, tolal_variation);
+  if (k_value == 1)calculate_gradient(1, tolal_variation);//this work only when k=1, the value before is known (K=0,Var=0)
 }
 //-----------------------------------------------------------------------------------------------------------------
 void calculate_gradient(float a, float b) {
