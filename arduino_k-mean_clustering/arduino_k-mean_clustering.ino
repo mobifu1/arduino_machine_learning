@@ -12,15 +12,16 @@
 
 #define input_data 48
 #define attributes 4
-const int  k = 1; //number of clusters to divide the input data
+const int  k = 3; //number of clusters to divide the input data
 
-//Elbow-Plot X,Y:                                                                                                      |Y
-//K=0 > Variation=0                                                                                alfa                |
-//K=1 > Variation=145.89  alfa=89.60727                                                             /                  |
-//K=2 > Variation=296.80  alfa=89.61392  diff= 0.00665                                             /                   |
-//K=3 > Variation=361.26  alfa=89.52421  diff=-0,08971 > optimum!!!                               /                    |
-//K=4 > Variation=437.32  alfa=89.47595  diff=-0,04826                                         X /_____________________|
-//--------------------------------------------------------------------
+//Elbow-Plot X,Y:                                                                                                        |Y
+//K=0 > Variation=0                                                                                  alfa                |
+//K=1 > Variation=96.39.  alfa=89.405605                                                              /                  |
+//K=2 > Variation=198.49  alfa=89.422703  diff= 0.017098                                             /                   |
+//K=3 > Variation=245.34  alfa=89.299426  diff=−0.123277 > optimum!!!                               /                    |
+//K=4 > Variation=279.51  alfa=89,180109  diff=−0.119317                                         X /_____________________|
+//K=5 > Variation=328.03  alfa=89.126660  diff=−0.053449
+//-------------------------------------------------------------------------------------------------------------------------------------------------
 float training_data_set[input_data][attributes] = { //input data to clustering
 
   {5.1, 3.5, 1.4, 0.2},
@@ -57,29 +58,30 @@ float training_data_set[input_data][attributes] = { //input data to clustering
   {5.6, 2.9, 3.6, 1.3},
   {6.7, 3.1, 4.4, 1.4},
   //
-  {0.3, 3.3, 6.0, 2.5},
-  {0.8, 2.7, 5.1, 1.9},
-  {0.1, 3.0, 5.9, 2.1},
-  {0.3, 2.9, 5.6, 1.8},
-  {0.5, 3.0, 5.8, 2.2},
-  {0.6, 3.0, 6.6, 2.1},
-  {0.9, 2.5, 4.5, 1.7},
-  {0.3, 2.9, 6.3, 1.8},
-  {0.7, 2.5, 5.8, 1.8},
-  {0.2, 3.6, 6.1, 2.5},
-  {0.5, 3.2, 5.1, 2.0},
-  {0.4, 2.7, 5.3, 1.9},
-  {0.8, 3.0, 5.5, 2.1},
-  {0.7, 2.5, 5.0, 2.0},
-  {0.8, 2.8, 5.1, 2.4},
-  {0.4, 3.2, 5.3, 2.3},
+  {6.3, 3.3, 6.0, 2.5},
+  {5.8, 2.7, 5.1, 1.9},
+  {7.1, 3.0, 5.9, 2.1},
+  {6.3, 2.9, 5.6, 1.8},
+  {6.5, 3.0, 5.8, 2.2},
+  {7.6, 3.0, 6.6, 2.1},
+  {4.9, 2.5, 4.5, 1.7},
+  {7.3, 2.9, 6.3, 1.8},
+  {6.7, 2.5, 5.8, 1.8},
+  {7.2, 3.6, 6.1, 2.5},
+  {6.5, 3.2, 5.1, 2.0},
+  {6.4, 2.7, 5.3, 1.9},
+  {6.8, 3.0, 5.5, 2.1},
+  {5.7, 2.5, 5.0, 2.0},
+  {5.8, 2.8, 5.1, 2.4},
+  {6.4, 3.2, 5.3, 2.3},
 };
 
 float k_means[input_data][k + 1] = {}; //distance to cluster centres
 
 float clusters[k][attributes] = {}; //cluster center points
 //######################################################################################################
-int maximum_iterations = 20;
+int iterations = 0;
+int maximum_iterations = 10;
 boolean error = true;
 unsigned long time;
 //######################################################################################################
@@ -131,7 +133,6 @@ void start_clustering(int input_data_set, int attribute_dat_set, int k_value) {
   //--------------------------------------------------------
 
   boolean quality = false;//quality of clustering
-  int iterations = 0;
 
   while (quality == false ) {
 
@@ -216,8 +217,8 @@ void start_clustering(int input_data_set, int attribute_dat_set, int k_value) {
 
   Serial.println(F("FINAL STATE:"));
   Serial.println("Iterations=" + String(iterations));
-  show_k_means_table(input_data_set, k_value);
-  show_cluster_table(k_value, attribute_dat_set);
+  //show_k_means_table(input_data_set, k_value);
+  //show_cluster_table(k_value, attribute_dat_set);
 
   measure_varianz(input_data_set, attribute_dat_set, k_value);
 }
@@ -253,6 +254,15 @@ void measure_varianz(int input_data_set, int attribute_dat_set, int k_value) {
     tolal_variation += variation[i];
   }
   Serial.println("Total Variation:" + String(tolal_variation) + "  K=" + String(k_value)); //you need an elbow plot to check the best k-value by variaton
+  calculate_gradient(k_value, tolal_variation);
+}
+//-----------------------------------------------------------------------------------------------------------------
+void calculate_gradient(float a, float b) {
+
+  float c = sqrt((a * a) + (b * b));
+  float alfa = acos(((a * a) + (c * c) - (b * b)) / (2 * a * c));
+  alfa = alfa * 180 / 3.14159;//rad to deg
+  Serial.println("Gradient: alfa=" + String(alfa, 5) + " Deg");
 }
 //-----------------------------------------------------------------------------------------------------------------
 void show_k_means_table(int input_data_set, int k_value) {
