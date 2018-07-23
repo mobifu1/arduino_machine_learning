@@ -12,7 +12,7 @@
 
 #define input_data 48
 #define attributes 4
-const int  k = 6; //number of clusters to divide the input data
+const int  k = 3; //number of clusters to divide the input data
 //                                                                                         Elbow-Plot:                 |Y
 //Elbow-Plot X,Y:                                                                                           /          |
 //K=0 > Variation=0                                                                                  _____ /           |
