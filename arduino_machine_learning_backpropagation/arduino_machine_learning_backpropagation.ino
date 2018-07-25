@@ -371,8 +371,8 @@ void test_sigmoid_function() {
 //-----------------------------------------------------------------------------------------------------------------
 float tangens_hyperbolic(float x) { //tanh function
 
-  float result; float gain = 1;
-  result = (gain * x );//gain = 0.5 -1.5
+  float result; float gain = 0.5;
+  result = tanh (gain * x ); //gain = 0.5 -1.5
   return result;
 }
 //-----------------------------------------------------------------------------------------------------------------
