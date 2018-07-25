@@ -369,6 +369,13 @@ void test_sigmoid_function() {
   }
 }
 //-----------------------------------------------------------------------------------------------------------------
+float tangens_hyperbolic(float x) { //tanh function
+
+  float result; float gain = 1;
+  result = (gain * x );//gain = 0.5 -1.5
+  return result;
+}
+//-----------------------------------------------------------------------------------------------------------------
 void show_weights() { //you can copy the serial output of weights into the sourcecode
 
   Serial.println(F("------------------------"));
