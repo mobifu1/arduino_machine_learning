@@ -53,7 +53,7 @@ float test_data_set[num_of_test_data_set][num_of_inputs] = { // input data to pr
   {2, 2, 0.003, 3, 0.75}, // Input: oval orange raspberry
 };
 //######################################################################################################
-int activation_function = 0;  // 0=sigmoid > OUTPUT:(0 to 1), 1=tanh OUTPUT:(-1 to 1)
+int activation_function = 0;  // 0=sigmoid > OUTPUT:(0 to 1), 1=tanh OUTPUT:(-1 to 1), 2=relu OUTPUT:(0 to max)
 float learn_rate = 0; // dynamic calculation
 int iterations_counter = 0;
 int maximum_iterations = 2000;
@@ -359,6 +359,7 @@ float activation_functions(float x) {
   float result;
   if (activation_function == 0)result = sigmoid(x);
   if (activation_function == 1)result = tangens_hyperbolic(x);
+  if (activation_function == 2)result = relu(x);
   return result;
 }
 //-----------------------------------------------------------------------------------------------------------------
@@ -370,12 +371,17 @@ float sigmoid(float x) { //sigmoid funktion > activation between 0 to 1
   return result;
 }
 //-----------------------------------------------------------------------------------------------------------------
-
 float tangens_hyperbolic(float x) { //tanh function > activation between -1 to 1
 
   float result; float gain = 0.5;
   result = tanh (gain * x ); //gain = 0.5 -1.5
   return result;
+}
+//-----------------------------------------------------------------------------------------------------------------
+float relu(float x) { //relu function > activation between 0 to max
+
+  if (x < 0)x = 0;
+  return x;
 }
 //-----------------------------------------------------------------------------------------------------------------
 void show_weights() { //you can copy the serial output of weights into the sourcecode
