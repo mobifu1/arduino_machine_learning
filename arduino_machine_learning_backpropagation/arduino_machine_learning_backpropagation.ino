@@ -53,6 +53,7 @@ float test_data_set[num_of_test_data_set][num_of_inputs] = { // input data to pr
   {2, 2, 0.003, 3, 0.75}, // Input: oval orange raspberry
 };
 //######################################################################################################
+int activation_function = 0;  // 0=sigmoid > OUTPUT:(0 to 1), 1=tanh OUTPUT:(-1 to 1)
 float learn_rate = 0; // dynamic calculation
 int iterations_counter = 0;
 int maximum_iterations = 2000;
@@ -266,64 +267,64 @@ void calc_neuron_net(float x0, float x1, float x2, float x3, float x4) { // calc
 
   //######first hidden layer##########################
   float y0 = calc_neuron(x0, weights[0][0], x1, weights[0][1], x2, weights[0][2], x3, weights[0][3], x4, weights[0][4], weights[0][5]);
-  y0 = sigmoid (y0);
+  y0 = activation_functions (y0);
   //Serial.println("Y0=" + String(y0));
   //-------------------------------------------------
   float y1 = calc_neuron(x0, weights[1][0], x1, weights[1][1], x2, weights[1][2], x3, weights[1][3], x4, weights[1][4], weights[1][5]);
-  y1 = sigmoid (y1);
+  y1 = activation_functions (y1);
   //Serial.println("Y1=" + String(y1));
   //-------------------------------------------------
   float y2 = calc_neuron(x0, weights[2][0], x1, weights[2][1], x2, weights[2][2], x3, weights[2][3], x4, weights[2][4], weights[2][5]);
-  y2 = sigmoid (y2);
+  y2 = activation_functions (y2);
   //Serial.println("Y2=" + String(y2));
   //-------------------------------------------------
   float y3 = calc_neuron(x0, weights[3][0], x1, weights[3][1], x2, weights[3][2], x3, weights[3][3], x4, weights[3][4], weights[3][5]);
-  y3 = sigmoid (y3);
+  y3 = activation_functions (y3);
   //Serial.println("Y3=" + String(y3));
   //-------------------------------------------------
   float y4 = calc_neuron(x0, weights[4][0], x1, weights[4][1], x2, weights[4][2], x3, weights[4][3], x4, weights[4][4], weights[4][5]);
-  y4 = sigmoid (y4);
+  y4 = activation_functions (y4);
   //Serial.println("Y4=" + String(y4));
 
   //######second hidden layer##########################
   float y00 = calc_neuron(y0, weights[5][0], y1, weights[5][1], y2, weights[5][2], y3, weights[5][3], y4, weights[5][4], weights[5][5]);
-  y00 = sigmoid (y00);
+  y00 = activation_functions (y00);
   //Serial.println("y00=" + String(y00));
   //-------------------------------------------------
   float y01 = calc_neuron(y0, weights[6][0], y1, weights[6][1], y2, weights[6][2], y3, weights[6][3], y4, weights[6][4], weights[6][5]);
-  y01 = sigmoid (y01);
+  y01 = activation_functions (y01);
   //Serial.println("y01=" + String(y01));
   //-------------------------------------------------
   float y02 = calc_neuron(y0, weights[7][0], y1, weights[7][1], y2, weights[7][2], y3, weights[7][3], y4, weights[7][4], weights[7][5]);
-  y02 = sigmoid (y02);
+  y02 = activation_functions (y02);
   //Serial.println("y02=" + String(y02));
   //-------------------------------------------------
   float y03 = calc_neuron(y0, weights[8][0], y1, weights[8][1], y2, weights[8][2], y3, weights[8][3], y4, weights[8][4], weights[8][5]);
-  y03 = sigmoid (y03);
+  y03 = activation_functions (y03);
   //Serial.println("y03=" + String(y03));
   //-------------------------------------------------
   float y04 = calc_neuron(y0, weights[9][0], y1, weights[9][1], y2, weights[9][2], y3, weights[9][3], y4, weights[9][4], weights[9][5]);
-  y04 = sigmoid (y04);
+  y04 = activation_functions (y04);
   //Serial.println("y04=" + String(y04));
 
   //######output layer#################################
   float out0 = calc_neuron(y00, weights[10][0], y01, weights[10][1], y02, weights[10][2], y03, weights[10][3], y04, weights[10][4], weights[10][5]);
-  out0 = sigmoid (out0);
+  out0 = activation_functions (out0);
   outputs[0] = out0;
   //Serial.println("Out0=" + String(out0));
   //-------------------------------------------------
   float out1 = calc_neuron(y00, weights[11][0], y01, weights[11][1], y02, weights[11][2], y03, weights[11][3], y04, weights[11][4], weights[11][5]);
-  out1 = sigmoid (out1);
+  out1 = activation_functions (out1);
   outputs[1] = out1;
   //Serial.println("Out1=" + String(out1));
   //-------------------------------------------------
   float out2 = calc_neuron(y00, weights[12][0], y01, weights[12][1], y02, weights[12][2], y03, weights[12][3], y04, weights[12][4], weights[12][5]);
-  out2 = sigmoid (out2);
+  out2 = activation_functions (out2);
   outputs[2] = out2;
   //Serial.println("Out2=" + String(out2));
   //-------------------------------------------------
   float out3 = calc_neuron(y00, weights[13][0], y01, weights[13][1], y02, weights[13][2], y03, weights[13][3], y04, weights[13][4], weights[13][5]);
-  out3 = sigmoid (out3);
+  out3 = activation_functions (out3);
   outputs[3] = out3;
   //Serial.println("Out3=" + String(out3));
 }
@@ -353,6 +354,14 @@ void format_the_input_data(int x, float multiplicator , float offset) { // forma
   }
 }
 //-----------------------------------------------------------------------------------------------------------------
+float activation_functions(float x) {
+
+  float result;
+  if (activation_function == 0)result = sigmoid(x);
+  if (activation_function == 1)result = tangens_hyperbolic(x);
+  return result;
+}
+//-----------------------------------------------------------------------------------------------------------------
 float sigmoid(float x) { //sigmoid funktion > activation between 0 to 1
 
   float e = 2.71828; float gain = 2;
@@ -361,14 +370,7 @@ float sigmoid(float x) { //sigmoid funktion > activation between 0 to 1
   return result;
 }
 //-----------------------------------------------------------------------------------------------------------------
-void test_sigmoid_function() {
 
-  for ( float y = -10; y < 10; y += 0.1) {
-    float function = sigmoid(float(y));
-    Serial.println("Sigmoid:" + String(y) + "/" + String(function));
-  }
-}
-//-----------------------------------------------------------------------------------------------------------------
 float tangens_hyperbolic(float x) { //tanh function > activation between -1 to 1
 
   float result; float gain = 0.5;
