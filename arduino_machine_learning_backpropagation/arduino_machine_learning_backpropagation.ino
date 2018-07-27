@@ -353,7 +353,7 @@ void format_the_input_data(int x, float multiplicator , float offset) { // forma
   }
 }
 //-----------------------------------------------------------------------------------------------------------------
-float sigmoid(float x) { //sigmoid funktion
+float sigmoid(float x) { //sigmoid funktion > activation between 0 to 1
 
   float e = 2.71828; float gain = 2;
   float result;
@@ -369,7 +369,7 @@ void test_sigmoid_function() {
   }
 }
 //-----------------------------------------------------------------------------------------------------------------
-float tangens_hyperbolic(float x) { //tanh function
+float tangens_hyperbolic(float x) { //tanh function > activation between -1 to 1
 
   float result; float gain = 0.5;
   result = tanh (gain * x ); //gain = 0.5 -1.5
