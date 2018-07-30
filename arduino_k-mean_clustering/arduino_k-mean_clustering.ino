@@ -12,15 +12,15 @@
 
 #define input_data 48
 #define attributes 4
-const int  k = 3; //number of clusters to divide the input data
-//                                                                                         Elbow-Plot:                 |Y
-//Elbow-Plot X,Y:                                                                                           /          |
-//K=0 > Variation=0                                                                                  _____ /           |
-//K=1 > Variation=96.39.  alfa=89.40560                                                             /                  |
-//K=2 > Variation=198.49  alfa=89.43893  diff=+0,03333                                             /  alfa             |
-//K=3 > Variation=245.34  alfa=88.77744  diff=−0,66149 > optimum!!!                               /                    |
-//K=4 > Variation=279.51  alfa=88.32376  diff=−0,45368                                         X /_____________________|
-//K=5 > Variation=328.03  alfa=88.81937  diff=+0,49561
+const int  k = 3; //number of clusters to divide the input data                                V
+//                                                                                Elbow-Plot:  | \
+//Elbow-Plot X,Y:                                                                              |  \
+//K=0 > Variance=NAN                                                                           |   \
+//K=1 > Variance=96.39                                                                         |    \
+//K=2 > Variance=43.61    //optimum!!!                                                         |     \
+//K=3 > Variance=33.48                                                                         |      --------------
+//K=4 > Variance=28.46                                                                         |___________________________K
+//K=5 > Variance=25.61
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 float training_data_set[input_data][attributes] = { //input data to clustering
 
@@ -220,29 +220,32 @@ void start_clustering(int input_data_set, int attribute_dat_set, int k_value) {
   //show_k_means_table(input_data_set, k_value);
   //show_cluster_table(k_value, attribute_dat_set);
 
-  measure_variation(input_data_set, attribute_dat_set, k_value);
+  measure_variance(input_data_set, attribute_dat_set, k_value);
 }
 //-----------------------------------------------------------------------------------------------------------------
-void measure_variation(int input_data_set, int attribute_dat_set, int k_value) {
+void measure_variance(int input_data_set, int attribute_dat_set, int k_value) {
 
   //Ziel von k-Means ist es, den Datensatz so in k Partitionen zu teilen,
   //dass die Summe der quadrierten Abweichungen von den Cluster-Schwerpunkten minimal ist.
   //Mathematisch entspricht dies der Optimierung der Funktion
 
   float result = 0;
-  float variation[input_data_set] = {}; //variation of input data to the cluster centres
+  float variation[input_data_set] = {}; //variation of input data to the alocated cluster centre
 
+  Serial.println(F("Measure variance"));
   for (int i = 0; i < input_data_set; i++) {
+    int value_1 = int(k_means[i][k_value]); //class
+    //Serial.print("Show distance to alocated cluster centre:" + String(i) + ";");
     for (int j = 0; j < attribute_dat_set; j++) {
-      for (int k = 0; k < k_value; k++) {
-        float value_1 = clusters[k][j];
-        float value_2 = training_data_set[i][j];
-        result += pow(value_1 - value_2, 2);
-      }
+      float value_2 = clusters[value_1][j];
+      float value_3 = training_data_set[i][j];
+      result += pow(value_3 - value_2, 2);
     }
     result = sqrt(result);
     variation[i] = result;
     result = 0;
+    //Serial.print(String(variation[i]));
+    //Serial.println();
   }
 
   //--------------------------------
@@ -252,22 +255,13 @@ void measure_variation(int input_data_set, int attribute_dat_set, int k_value) {
     tolal_variation += variation[i];
   }
   Serial.println("Total Variation:" + String(tolal_variation) + "  K=" + String(k_value)); //you need an elbow plot to check the best k-value by variaton
-  if (k_value == 1)calculate_gradient(1, tolal_variation);//this work only when k=1, the value before is known (K=0,Var=0)
-}
-//-----------------------------------------------------------------------------------------------------------------
-void calculate_gradient(float a, float b) {
-
-  float c = sqrt((a * a) + (b * b));
-  float alfa = acos(((a * a) + (c * c) - (b * b)) / (2 * a * c));
-  alfa = alfa * 180 / 3.14159;//rad to deg
-  Serial.println("Gradient: alfa=" + String(alfa, 5) + " Deg");
 }
 //-----------------------------------------------------------------------------------------------------------------
 void show_k_means_table(int input_data_set, int k_value) {
 
-  Serial.println("Show k-means table:");
+  Serial.println(F("Show k-means table:"));
   for (int z = 0; z < input_data_set; z++) {
-    Serial.print("Show distance to cluster centre:" + String(z) + ";");
+    Serial.print("Show distance to all cluster centre:" + String(z) + ";");
     for (int k = 0; k < k_value + 1; k++) {
       Serial.print(String(k_means[z][k]) + "," );
     }
@@ -278,7 +272,7 @@ void show_k_means_table(int input_data_set, int k_value) {
 //-----------------------------------------------------------------------------------------------------------------
 void show_cluster_table(int k_value, int attribute_dat_set) {
 
-  Serial.println("Show cluster table:");
+  Serial.println(F("Show cluster table:"));
   for (int k = 0; k < k_value; k++) {
     Serial.print("Show cluster centres:" + String(k) + ";");
     for (int j = 0; j < attribute_dat_set; j++) {
