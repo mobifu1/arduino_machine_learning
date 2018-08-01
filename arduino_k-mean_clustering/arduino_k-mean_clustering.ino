@@ -100,6 +100,7 @@ void loop() {
     start_clustering(input_data, attributes, k);
   }
 
+  checkout_elbow_plot();// ! you need all calculated variance before !
   runtime();
 
   Serial.println(F("End"));
@@ -254,7 +255,7 @@ void measure_variance(int input_data_set, int attribute_dat_set, int k_value) {
   for (int i = 0; i < input_data_set; i++) {
     tolal_variation += variation[i];
   }
-  Serial.println("Total Variation:" + String(tolal_variation) + "  K=" + String(k_value)); //you need an elbow plot to check the best k-value by variaton
+  Serial.println("Total variance:" + String(tolal_variation) + "  K=" + String(k_value)); //you need an elbow plot to check the best k-value by variaton
 }
 //-----------------------------------------------------------------------------------------------------------------
 void show_k_means_table(int input_data_set, int k_value) {
@@ -281,6 +282,31 @@ void show_cluster_table(int k_value, int attribute_dat_set) {
     Serial.println();
   }
   Serial.println("------");
+}
+//-----------------------------------------------------------------------------------------------------------------
+void checkout_elbow_plot() { //find the optimum of K
+
+  int k_value = 5;
+  float variances[k_value + 1] = {0, 96.39, 43.61, 33.48, 28.46, 25.61}; // values of variances by k value
+  float results[k_value ] = {};
+
+  for (int i = 1; i < k_value ; i++) {
+    float value_1 = variances[i];
+    float value_2 = variances[i + 1];
+    results[i] = sqrt(pow(value_1 - value_2, 2) + pow(1, 2));
+    //Serial.println("K=" + String(i) + ":" + String(results[i]));
+  }
+
+  int best_k = 0;
+  float maximum = 0;
+
+  for (int i = 1; i < k_value - 1; i++) {
+    if ((results[i] - results[i + 1]) > maximum ) {
+      maximum  = (results[i] - results[i + 1]);
+      best_k = i + 1;
+    }
+  }
+  Serial.println("Best K=" + String(best_k));
 }
 //-----------------------------------------------------------------------------------------------------------------
 void runtime() {
