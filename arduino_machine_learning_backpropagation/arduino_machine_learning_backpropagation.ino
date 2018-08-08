@@ -62,18 +62,15 @@ int learn_extra_rounds = 3; //if the software cant find a global minimum > init 
 float threshold = 0.85; //for a good prediction
 unsigned long time;
 byte use_init_weights = 0;// 0 = init by random weights, 1 = init by learned weights
+float input_data_min = 0;//format the input data in the range between min an max
+float input_data_max = 1;
 //######################################################################################################
 void setup() {
 
   Serial.begin(9600);
   Serial.println(F("Arduino Machine Learn & Predict"));
 
-  //             (column, multiplicator, offset)
-  format_the_input_data(0, 1,   -1.5); // format the input data into a range between -1 to +1
-  format_the_input_data(1, 1,   -3.0); // format the input data into a range between -1 to +1
-  format_the_input_data(2, 1,   -1.5); // format the input data into a range between -1 to +1
-  format_the_input_data(3, 1,   -2.0); // format the input data into a range between -1 to +1
-  format_the_input_data(4, 0.1, -1.0); // format the input data into a range between -1 to +1
+  format_the_input_data(input_data_min, input_data_max); // format the input data into a range between 0 to +1
 
   //test_sigmoid_function();
   if (use_init_weights == 0)init_random_weights(); // start with random values > start from scratch
@@ -335,22 +332,43 @@ float calc_neuron(float input_0, float weight_0, float input_1, float weight_1, 
   return output;
 }
 //-----------------------------------------------------------------------------------------------------------------
-void format_the_input_data(int x, float multiplicator , float offset) { // format the input data into a range between -1 to +1
+void format_the_input_data(float d_1, float d_2) { // format the input data into a range between 0 to +1
+
+  float value_min[num_of_inputs] = {};
+  float value_max[num_of_inputs] = {};
+
+  for ( int i = 0; i < num_of_inputs; i++) {
+    value_min[i] = 999999;
+    value_max[i] = -999999;
+  }
+
+  for ( int z = 0; z < num_of_inputs; z++) {
+    for ( int y = 0; y < num_of_training_data_set; y++) {
+      if (training_data_set[y][z] < value_min[z])value_min[z] = training_data_set[y][z];
+      if (training_data_set[y][z] > value_max[z])value_max[z] = training_data_set[y][z];
+    }
+    //Serial.println("Value Min=" + String(value_min[z], 5));
+    //Serial.println("Value Max=" + String(value_max[z], 5));
+  }
 
   Serial.println(F("Format Training Data:"));
 
-  for ( int y = 0; y < num_of_training_data_set; y++) {
-    training_data_set[y][x] *= multiplicator;
-    training_data_set[y][x] += offset;
-    //Serial.println(String(training_data_set[y][x], 5));
+  for ( int z = 0; z < num_of_inputs; z++) {
+    for ( int y = 0; y < num_of_training_data_set; y++) {
+      training_data_set[y][z] = (((training_data_set[y][z] - value_min[z]) * (d_2 - d_1)) / (value_max[z] - value_min[z])) + d_1;
+      //Serial.println(String(training_data_set[y][z], 5));
+    }
+    //Serial.println("---------");
   }
 
   Serial.println(F("Format Test Data:"));
 
-  for ( int y = 0; y < num_of_test_data_set; y++) {
-    test_data_set[y][x] *= multiplicator;
-    test_data_set[y][x] += offset;
-    //Serial.println(String(test_data_set[y][x], 5));
+  for ( int z = 0; z < num_of_inputs; z++) {
+    for ( int y = 0; y < num_of_training_data_set; y++) {
+      test_data_set[y][z] = (((test_data_set[y][z] - value_min[z]) * (d_2 - d_1)) / (value_max[z] - value_min[z])) + d_1;
+      //Serial.println(String(test_data_set[y][z], 5));
+    }
+    //Serial.println("---------");
   }
 }
 //-----------------------------------------------------------------------------------------------------------------
@@ -410,90 +428,90 @@ void init_learned_weights() { // this is copy and paste from serial output all w
 
   Serial.println(F("Init weights by learned values"));
 
-  weights[0][0] = 0.0105834;
-  weights[0][1] = -0.5518286;
-  weights[0][2] = 0.2648753;
-  weights[0][3] = -1.9677936;
-  weights[0][4] = -0.8947017;
-  weights[0][5] = -0.4772248;
+  weights[0][0] = 0.3070000;
+  weights[0][1] = -0.4110000;
+  weights[0][2] = -0.0190000;
+  weights[0][3] = 0.6698763;
+  weights[0][4] = -4.7596560;
+  weights[0][5] = 1.7788529;
   weights[1][0] = 0.3000000;
-  weights[1][1] = -2.5011883;
-  weights[1][2] = -3.9357519;
-  weights[1][3] = -1.0238011;
-  weights[1][4] = -0.2040000;
-  weights[1][5] = -0.0550000;
-  weights[2][0] = 0.2480002;
+  weights[1][1] = -0.0334202;
+  weights[1][2] = -1.7732860;
+  weights[1][3] = -4.6559601;
+  weights[1][4] = 0.5719578;
+  weights[1][5] = 1.5196481;
+  weights[2][0] = 0.6398958;
   weights[2][1] = 0.0220000;
-  weights[2][2] = 0.3893145;
-  weights[2][3] = -0.3490000;
-  weights[2][4] = 1.2685187;
-  weights[2][5] = 0.1570000;
-  weights[3][0] = -0.1960000;
+  weights[2][2] = 0.1830001;
+  weights[2][3] = 0.3304780;
+  weights[2][4] = 0.8886317;
+  weights[2][5] = -0.5657277;
+  weights[3][0] = -0.5545579;
   weights[3][1] = 0.2720000;
-  weights[3][2] = 0.3230001;
-  weights[3][3] = -0.4750000;
-  weights[3][4] = 2.1199930;
-  weights[3][5] = 0.1209128;
-  weights[4][0] = 2.0862801;
-  weights[4][1] = 0.3476125;
+  weights[3][2] = 0.6831087;
+  weights[3][3] = -0.6559621;
+  weights[3][4] = 4.1430759;
+  weights[3][5] = -1.5531576;
+  weights[4][0] = 0.3879999;
+  weights[4][1] = -0.1430000;
   weights[4][2] = -0.1370000;
-  weights[4][3] = 0.2110494;
-  weights[4][4] = 0.0999999;
-  weights[4][5] = -0.9599211;
-  weights[5][0] = -0.1059597;
-  weights[5][1] = -0.2875824;
-  weights[5][2] = 0.4119999;
-  weights[5][3] = 1.2449268;
+  weights[4][3] = -0.7693543;
+  weights[4][4] = 0.1000001;
+  weights[4][5] = -0.0690000;
+  weights[5][0] = 1.9320006;
+  weights[5][1] = -3.6710000;
+  weights[5][2] = 0.4120000;
+  weights[5][3] = -1.9166203;
   weights[5][4] = -0.2420000;
   weights[5][5] = -0.3150000;
-  weights[6][0] = 0.1990000;
-  weights[6][1] = 2.4245224;
-  weights[6][2] = 0.0149999;
-  weights[6][3] = 0.0458823;
-  weights[6][4] = 1.4359946;
-  weights[6][5] = -2.2700801;
-  weights[7][0] = 0.4129999;
+  weights[6][0] = 0.1990002;
+  weights[6][1] = 5.2787738;
+  weights[6][2] = 0.0150000;
+  weights[6][3] = -0.4165656;
+  weights[6][4] = 0.3150000;
+  weights[6][5] = -2.4581294;
+  weights[7][0] = 1.8088355;
   weights[7][1] = -0.0920000;
   weights[7][2] = -0.3110000;
   weights[7][3] = 0.2610000;
-  weights[7][4] = 0.1360000;
-  weights[7][5] = -0.0490000;
-  weights[8][0] = -2.4651368;
-  weights[8][1] = 0.5098931;
+  weights[7][4] = 0.1359999;
+  weights[7][5] = -1.0577508;
+  weights[8][0] = 1.7511318;
+  weights[8][1] = 0.0570000;
   weights[8][2] = -0.4430000;
-  weights[8][3] = -2.4636235;
-  weights[8][4] = 1.0197308;
-  weights[8][5] = 0.4028286;
-  weights[9][0] = 1.8676932;
-  weights[9][1] = 0.0520480;
+  weights[8][3] = -1.8508313;
+  weights[8][4] = 0.2320000;
+  weights[8][5] = 0.1560001;
+  weights[9][0] = 3.3128457;
+  weights[9][1] = -0.4260000;
   weights[9][2] = -0.2880000;
-  weights[9][3] = -1.6938651;
-  weights[9][4] = -1.1774627;
-  weights[9][5] = -0.0570754;
-  weights[10][0] = -0.1940000;
-  weights[10][1] = 0.0140000;
+  weights[9][3] = -2.7947559;
+  weights[9][4] = -0.2500000;
+  weights[9][5] = 0.4973691;
+  weights[10][0] = -1.2907034;
+  weights[10][1] = 1.4804363;
   weights[10][2] = -0.2310000;
-  weights[10][3] = -0.3766415;
-  weights[10][4] = 2.9596291;
-  weights[10][5] = -1.3368514;
-  weights[11][0] = 0.1825323;
-  weights[11][1] = 2.5743849;
+  weights[10][3] = 0.1799999;
+  weights[10][4] = 2.5182271;
+  weights[10][5] = -2.7248242;
+  weights[11][0] = 0.0210000;
+  weights[11][1] = 2.5348809;
   weights[11][2] = -0.2880000;
-  weights[11][3] = -2.0042036;
-  weights[11][4] = -1.7978091;
-  weights[11][5] = -1.2737993;
-  weights[12][0] = 0.8559095;
-  weights[12][1] = -2.7656651;
+  weights[11][3] = -0.3110000;
+  weights[11][4] = -2.2629516;
+  weights[11][5] = -1.2203776;
+  weights[12][0] = -0.2090000;
+  weights[12][1] = -2.6359692;
   weights[12][2] = -0.2910000;
   weights[12][3] = -0.3020000;
-  weights[12][4] = -0.4610000;
-  weights[12][5] = 0.6394736;
-  weights[13][0] = -0.3571249;
-  weights[13][1] = -0.7031599;
+  weights[12][4] = -1.9255922;
+  weights[12][5] = 1.2097598;
+  weights[13][0] = 1.0635144;
+  weights[13][1] = -1.9355142;
   weights[13][2] = -0.1530000;
-  weights[13][3] = 3.2384706;
-  weights[13][4] = 0.1770000;
-  weights[13][5] = -1.0328428;
+  weights[13][3] = 0.4739997;
+  weights[13][4] = 1.4908051;
+  weights[13][5] = -1.4127073;
 }
 //-----------------------------------------------------------------------------------------------------------------
 float create_random() { // random numbes beetwen -1 and +1
