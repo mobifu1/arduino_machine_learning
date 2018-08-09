@@ -355,8 +355,11 @@ void format_the_input_data(float d_1, float d_2) { // format the input data into
 
   for ( int z = 0; z < num_of_inputs; z++) {
     for ( int y = 0; y < num_of_training_data_set; y++) {
-      training_data_set[y][z] = (((training_data_set[y][z] - value_min[z]) * (d_2 - d_1)) / (value_max[z] - value_min[z])) + d_1;
+      if (value_max[z] != value_min[z]) {
+        training_data_set[y][z] = (((training_data_set[y][z] - value_min[z]) * (d_2 - d_1)) / (value_max[z] - value_min[z])) + d_1;
+      }
       //Serial.println(String(training_data_set[y][z], 5));
+
     }
     //Serial.println("---------");
   }
@@ -364,8 +367,10 @@ void format_the_input_data(float d_1, float d_2) { // format the input data into
   Serial.println(F("Format Test Data:"));
 
   for ( int z = 0; z < num_of_inputs; z++) {
-    for ( int y = 0; y < num_of_training_data_set; y++) {
-      test_data_set[y][z] = (((test_data_set[y][z] - value_min[z]) * (d_2 - d_1)) / (value_max[z] - value_min[z])) + d_1;
+    for ( int y = 0; y < num_of_test_data_set; y++) {
+      if (value_max[z] != value_min[z]) {
+        test_data_set[y][z] = (((test_data_set[y][z] - value_min[z]) * (d_2 - d_1)) / (value_max[z] - value_min[z])) + d_1;
+      }
       //Serial.println(String(test_data_set[y][z], 5));
     }
     //Serial.println("---------");
@@ -492,7 +497,7 @@ void init_learned_weights() { // this is copy and paste from serial output all w
   weights[10][1] = 1.4804363;
   weights[10][2] = -0.2310000;
   weights[10][3] = 0.1799999;
-  weights[10][4] = 2.5182271;
+  weights[10][4] = 2.5232320;
   weights[10][5] = -2.7248242;
   weights[11][0] = 0.0210000;
   weights[11][1] = 2.5348809;
@@ -505,7 +510,7 @@ void init_learned_weights() { // this is copy and paste from serial output all w
   weights[12][2] = -0.2910000;
   weights[12][3] = -0.3020000;
   weights[12][4] = -1.9255922;
-  weights[12][5] = 1.2097598;
+  weights[12][5] = 1.2147701;
   weights[13][0] = 1.0635144;
   weights[13][1] = -1.9355142;
   weights[13][2] = -0.1530000;
