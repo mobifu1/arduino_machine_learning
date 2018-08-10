@@ -12,7 +12,7 @@
 
 #define input_data 48
 #define attributes 4
-const int  k = 3; //number of clusters to divide the input data                                V
+const int  k = 5; //number of clusters to divide the input data                                V
 //                                                                                Elbow-Plot:  | \
 //Elbow-Plot X,Y:                                                                              |  \
 //K=0 > Variance=NAN                                                                           |   \
@@ -109,7 +109,7 @@ void loop() {
   }
 }
 //-----------------------------------------------------------------------------------------------------------------
-void start_clustering(int input_data_set, int attribute_dat_set, int k_value) {
+void start_clustering(int input_data_set, int attribute_data_set, int k_value) {
 
   Serial.println("CLUSTERS: K=" + String(k_value));
 
@@ -125,11 +125,11 @@ void start_clustering(int input_data_set, int attribute_dat_set, int k_value) {
     randomSeed(random_number);
     Serial.println("Random number:" + String(random_number));
 
-    for (int j = 0; j < attribute_dat_set; j++) {
+    for (int j = 0; j < attribute_data_set; j++) {
       clusters[i][j] = training_data_set[random_number][j];// copy k * random inputs into the cluster array
     }
   }
-  show_cluster_table(k_value, attribute_dat_set);
+  show_cluster_table(k_value, attribute_data_set);
 
   //--------------------------------------------------------
 
@@ -144,12 +144,12 @@ void start_clustering(int input_data_set, int attribute_dat_set, int k_value) {
 
     Serial.println(F("CALCULATE DISTANCE:")); //distance from the clusters
 
-    float results[attribute_dat_set] = {};
+    float results[attribute_data_set] = {};
     float total_result = 0 ;
 
     for (int k = 0; k < k_value; k++) {
       for (int i = 0; i < input_data_set; i++) {
-        for (int j = 0; j < attribute_dat_set; j++) {
+        for (int j = 0; j < attribute_data_set; j++) {
           results[j] = fabs(clusters[k][j] - training_data_set[i][j]);
           total_result += results[j];
         }
@@ -159,7 +159,7 @@ void start_clustering(int input_data_set, int attribute_dat_set, int k_value) {
     }
 
     show_k_means_table(input_data_set, k_value);
-    show_cluster_table(k_value, attribute_dat_set);
+    show_cluster_table(k_value, attribute_data_set);
 
     //--------------------------------------------------------
 
@@ -188,7 +188,7 @@ void start_clustering(int input_data_set, int attribute_dat_set, int k_value) {
     float counter = 0;
 
     for (int k = 0; k < k_value; k++) {
-      for (int j = 0; j < attribute_dat_set; j++) {
+      for (int j = 0; j < attribute_data_set; j++) {
         for (int i = 0; i < input_data_set; i++) {
           //Serial.println("index:" + String(k) + "," + String(j) +  "," + String(i) );
           if (k_means[i][k_value] == k) {
@@ -208,7 +208,7 @@ void start_clustering(int input_data_set, int attribute_dat_set, int k_value) {
     }
 
     show_k_means_table(input_data_set, k_value);
-    show_cluster_table(k_value, attribute_dat_set);
+    show_cluster_table(k_value, attribute_data_set);
 
     if (iterations == maximum_iterations) {
       error = true;
@@ -221,7 +221,7 @@ void start_clustering(int input_data_set, int attribute_dat_set, int k_value) {
   //show_k_means_table(input_data_set, k_value);
   //show_cluster_table(k_value, attribute_dat_set);
 
-  measure_variance(input_data_set, attribute_dat_set, k_value);
+  measure_variance(input_data_set, attribute_data_set, k_value);
 }
 //-----------------------------------------------------------------------------------------------------------------
 void measure_variance(int input_data_set, int attribute_dat_set, int k_value) {
