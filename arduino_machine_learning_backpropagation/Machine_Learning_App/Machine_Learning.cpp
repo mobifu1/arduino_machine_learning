@@ -5,11 +5,10 @@
 //####            Thinking about: shit in > shit out                     ####
 //###########################################################################
 
-//This code you can use for example by Visual Studio 2015 as c++ console.application
-
-#include "stdafx.h"
 #include <iostream>
 #include <string>
+#include <cmath>
+#include <stdlib.h>
 
 using namespace std;
 
@@ -87,7 +86,6 @@ int maximum_iterations = 100000;
 float accepted_error = 0.01;
 int learn_extra_rounds = 3; //if the software cant find a global minimum > init the weights new.
 float threshold = 0.85; //for a good prediction
-unsigned long time;
 int use_init_weights = 0;// 0 = init by random weights, 1 = init by learned weights
 float input_data_min = 0;//format the input data in the range between min an max
 float input_data_max = 1;
