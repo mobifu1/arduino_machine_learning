@@ -31,7 +31,7 @@ K=4 > Variance=28.46                                                            
 K=5 > Variance=25.61
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 */
-float training_data_set[input_data][attributes] = { //input data to clustering
+float cluster_data_set[input_data][attributes] = { //input data to clustering
 
   {5.1, 3.5, 1.4, 0.2},
   {4.9, 3.0, 1.4, 0.2},
@@ -127,9 +127,11 @@ void show_cluster_table(int k_value, int attribute_dat_set) {
 //------------------------------------------------------------------------------------------------------------------
 void measure_variance(int input_data_set, int attribute_dat_set, int k_value) {
 
-  //Ziel von k-Means ist es, den Datensatz so in k Partitionen zu teilen,
-  //dass die Summe der quadrierten Abweichungen von den Cluster-Schwerpunkten minimal ist.
-  //Mathematisch entspricht dies der Optimierung der Funktion
+  /*
+  Ziel von k-Means ist es, den Datensatz so in k Partitionen zu teilen,
+  dass die Summe der quadrierten Abweichungen von den Cluster-Schwerpunkten minimal ist.
+  Mathematisch entspricht dies der Optimierung der Funktion
+  */
 
   float result = 0;
   float variation[input_data_set] = {}; //variation of input data to the alocated cluster centre
@@ -140,7 +142,7 @@ void measure_variance(int input_data_set, int attribute_dat_set, int k_value) {
     //cout << "Show distance to alocated cluster centre:" << i << ";";
     for (int j = 0; j < attribute_dat_set; j++) {
       float value_2 = clusters[value_1][j];
-      float value_3 = training_data_set[i][j];
+      float value_3 = cluster_data_set[i][j];
       result += pow(value_3 - value_2, 2);
     }
     result = sqrt(result);
@@ -174,9 +176,10 @@ void start_clustering(int input_data_set, int attribute_data_set, int k_value) {
     cout << "Random number:" << random_number << endl;
 
     for (int j = 0; j < attribute_data_set; j++) {
-	   clusters[i][j] = training_data_set[random_number][j];// copy k * random inputs into the cluster array
+	   clusters[i][j] = cluster_data_set[random_number][j];// copy k * random inputs into the cluster array
     }
   }
+  cout << "------" << endl;
   show_cluster_table(k_value, attribute_data_set);
 
   //--------------------------------------------------------
@@ -187,9 +190,8 @@ void start_clustering(int input_data_set, int attribute_data_set, int k_value) {
 
     quality = true;
     iterations++;
+    
     cout << "Iterations:" << iterations << endl;
-
-
     cout << "CALCULATE DISTANCE:" << endl; //distance from the clusters
 
     float results[attribute_data_set] = {};
@@ -198,7 +200,7 @@ void start_clustering(int input_data_set, int attribute_data_set, int k_value) {
     for (int k = 0; k < k_value; k++) {
       for (int i = 0; i < input_data_set; i++) {
         for (int j = 0; j < attribute_data_set; j++) {
-          results[j] = fabs(clusters[k][j] - training_data_set[i][j]);
+          results[j] = fabs(clusters[k][j] - cluster_data_set[i][j]);
           total_result += results[j];
         }
         k_means[i][k] = total_result;
@@ -229,6 +231,7 @@ void start_clustering(int input_data_set, int attribute_data_set, int k_value) {
       cout << "Data set:" << i << " class=" << k_means[i][k_value] << endl;
     }
 
+    cout << "------" << endl;
     cout << "UPDATE CENTROID:" << endl;//update of cluster centre points
 
     float middle_value = 0;
@@ -240,8 +243,8 @@ void start_clustering(int input_data_set, int attribute_data_set, int k_value) {
           //cout << "index:" << k << "," << j << "," << i <<endl;
           if (k_means[i][k_value] == k) {
             counter++;
-            middle_value += training_data_set[i][j];
-            //cout << "found:" << training_data_set[i][j] << "," << middle_value << endl;
+            middle_value += cluster_data_set[i][j];
+            //cout << "found:" << cluster_data_set[i][j] << "," << middle_value << endl;
           }
         }
         //cout << "result:" << middle_value << "/" << counter << endl;

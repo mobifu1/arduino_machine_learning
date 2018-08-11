@@ -22,7 +22,7 @@ const int  k = 5; //number of clusters to divide the input data                 
 //K=4 > Variance=28.46                                                                         |___________________________K
 //K=5 > Variance=25.61
 //-------------------------------------------------------------------------------------------------------------------------------------------------
-float training_data_set[input_data][attributes] = { //input data to clustering
+float cluster_data_set[input_data][attributes] = { //input data to clustering
 
   {5.1, 3.5, 1.4, 0.2},
   {4.9, 3.0, 1.4, 0.2},
@@ -126,7 +126,7 @@ void start_clustering(int input_data_set, int attribute_data_set, int k_value) {
     Serial.println("Random number:" + String(random_number));
 
     for (int j = 0; j < attribute_data_set; j++) {
-      clusters[i][j] = training_data_set[random_number][j];// copy k * random inputs into the cluster array
+      clusters[i][j] = cluster_data_set[random_number][j];// copy k * random inputs into the cluster array
     }
   }
   show_cluster_table(k_value, attribute_data_set);
@@ -150,7 +150,7 @@ void start_clustering(int input_data_set, int attribute_data_set, int k_value) {
     for (int k = 0; k < k_value; k++) {
       for (int i = 0; i < input_data_set; i++) {
         for (int j = 0; j < attribute_data_set; j++) {
-          results[j] = fabs(clusters[k][j] - training_data_set[i][j]);
+          results[j] = fabs(clusters[k][j] - cluster_data_set[i][j]);
           total_result += results[j];
         }
         k_means[i][k] = total_result;
@@ -193,8 +193,8 @@ void start_clustering(int input_data_set, int attribute_data_set, int k_value) {
           //Serial.println("index:" + String(k) + "," + String(j) +  "," + String(i) );
           if (k_means[i][k_value] == k) {
             counter++;
-            middle_value += training_data_set[i][j];
-            //Serial.println("found:" + String(training_data_set[i][j]) + "," + String(middle_value));
+            middle_value += cluster_data_set[i][j];
+            //Serial.println("found:" + String(cluster_data_set[i][j]) + "," + String(middle_value));
           }
         }
         //Serial.println("result:" + String(middle_value) + "/" + String(counter));
@@ -239,7 +239,7 @@ void measure_variance(int input_data_set, int attribute_dat_set, int k_value) {
     //Serial.print("Show distance to alocated cluster centre:" + String(i) + ";");
     for (int j = 0; j < attribute_dat_set; j++) {
       float value_2 = clusters[value_1][j];
-      float value_3 = training_data_set[i][j];
+      float value_3 = cluster_data_set[i][j];
       result += pow(value_3 - value_2, 2);
     }
     result = sqrt(result);
