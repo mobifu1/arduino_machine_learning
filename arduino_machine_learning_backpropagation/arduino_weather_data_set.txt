@@ -1,5 +1,5 @@
 //###########################################################################
-//####        Demo KNN Classification of Weather Data Set                ####
+//####        Demo ANN Classification of Weather Data Set                ####
 //####             Training Data Set / Test Dat Set                      ####
 //####        Make what you want with this sourcecode :-)                ####
 //####            Thinking about: shit in > shit out                     ####
@@ -52,100 +52,93 @@
 {  2.5, -7.0,   12, 17, 4}, // storm winter
 
 // activation = sigmoid
-//-----------------------------------------------------------------------------------------------------------------
-//Formats:
-//             (column, multiplicator, offset)
-format_the_input_data(0, 1.0,  0); // format the input data into a range between -1 to +1
-format_the_input_data(1, 0.5,  0); // format the input data into a range between -1 to +1
-format_the_input_data(2, 0.5,  0); // format the input data into a range between -1 to +1
-format_the_input_data(3, 0.1,  0); // format the input data into a range between -1 to +1
-format_the_input_data(4, 1.0, -2); // format the input data into a range between -1 to +1
 
 //-----------------------------------------------------------------------------------------------------------------
 //Weights:
 
-weights[0][0] = 0.0246321;
-weights[0][1] = -1.9239095;
-weights[0][2] = -0.0190000;
-weights[0][3] = -0.3860000;
-weights[0][4] = -0.1471026;
-weights[0][5] = -1.0978334;
-weights[1][0] = -0.1432459;
-weights[1][1] = -3.4778428;
-weights[1][2] = -3.3715386;
-weights[1][3] = -0.3990000;
-weights[1][4] = -0.1208463;
-weights[1][5] = 2.1220815;
-weights[2][0] = -0.0241743;
-weights[2][1] = -1.8063695;
-weights[2][2] = -0.6710852;
-weights[2][3] = -5.4625463;
-weights[2][4] = -0.0538539;
-weights[2][5] = 1.2573749;
-weights[3][0] = -0.1960000;
-weights[3][1] = -2.6217976;
-weights[3][2] = 0.3229998;
-weights[3][3] = -0.4750000;
-weights[3][4] = -0.1054575;
-weights[3][5] = 1.2693186;
-weights[4][0] = 0.0813684;
-weights[4][1] = -2.1947298;
-weights[4][2] = -1.7000058;
-weights[4][3] = 0.1380000;
-weights[4][4] = 0.0340013;
-weights[4][5] = -0.4207729;
-weights[5][0] = -1.6588523;
-weights[5][1] = -0.0420000;
-weights[5][2] = 3.8672462;
-weights[5][3] = 1.1422012;
-weights[5][4] = -1.0357457;
-weights[5][5] = -1.3270273;
-weights[6][0] = 0.1560128;
-weights[6][1] = 3.4277234;
-weights[6][2] = -0.2912726;
-weights[6][3] = 1.8450210;
-weights[6][4] = 0.3149997;
-weights[6][5] = -3.2071376;
-weights[7][0] = 0.4130000;
-weights[7][1] = -0.0920000;
-weights[7][2] = -0.3110000;
-weights[7][3] = 0.2610000;
-weights[7][4] = 0.1360000;
-weights[7][5] = -2.0797870;
-weights[8][0] = 2.2474506;
-weights[8][1] = -3.3920083;
-weights[8][2] = -0.7445644;
-weights[8][3] = 2.0455022;
-weights[8][4] = 0.2320000;
-weights[8][5] = -2.1523912;
-weights[9][0] = 0.3760000;
-weights[9][1] = -1.4724071;
-weights[9][2] = -0.2880000;
-weights[9][3] = -2.3762746;
-weights[9][4] = -0.2500000;
-weights[9][5] = 1.2638724;
-weights[10][0] = -0.1940000;
-weights[10][1] = -2.3418167;
-weights[10][2] = -0.2310000;
-weights[10][3] = -2.2779958;
-weights[10][4] = 0.8701977;
-weights[10][5] = 0.7389258;
-weights[11][0] = 2.9306872;
-weights[11][1] = 1.4321954;
-weights[11][2] = -0.2880000;
-weights[11][3] = -0.3110000;
-weights[11][4] = -0.3540000;
-weights[11][5] = -2.7562261;
-weights[12][0] = -2.9110792;
-weights[12][1] = 2.7512815;
-weights[12][2] = -0.2910000;
-weights[12][3] = -0.3020000;
-weights[12][4] = -0.4610000;
-weights[12][5] = -1.3172143;
-weights[13][0] = 0.1169998;
-weights[13][1] = -0.3990000;
-weights[13][2] = -0.1530000;
-weights[13][3] = 3.2276306;
-weights[13][4] = 0.1239149;
-weights[13][5] = -1.6328176;
+weights[0][0] = 3.59104;
+weights[0][1] = 48.7322;
+weights[0][2] = 0.277;
+weights[0][3] = 1.66107;
+weights[0][4] = 0.0301957;
+weights[0][5] = -33.1463;
+weights[1][0] = -0.114;
+weights[1][1] = -0.00800002;
+weights[1][2] = 0.149;
+weights[1][3] = -0.079;
+weights[1][4] = -0.138;
+weights[1][5] = -0.473;
+weights[2][0] = 0.19;
+weights[2][1] = -0.441;
+weights[2][2] = 0.263;
+weights[2][3] = 5.03819;
+weights[2][4] = 0.0400003;
+weights[2][5] = -2.98452;
+weights[3][0] = -0.328;
+weights[3][1] = 0.236;
+weights[3][2] = -0.289;
+weights[3][3] = -0.132;
+weights[3][4] = 0.0670005;
+weights[3][5] = 0.504641;
+weights[4][0] = 0.282;
+weights[4][1] = 0.0299999;
+weights[4][2] = 0.362;
+weights[4][3] = -0.377;
+weights[4][4] = -0.433;
+weights[4][5] = -0.365;
+weights[5][0] = 0.429;
+weights[5][1] = 0.302001;
+weights[5][2] = -0.478;
+weights[5][3] = -0.442;
+weights[5][4] = -0.431;
+weights[5][5] = -0.857074;
+weights[6][0] = 49.6405;
+weights[6][1] = -0.044;
+weights[6][2] = -1.12552;
+weights[6][3] = 2.1153;
+weights[6][4] = 1.54611;
+weights[6][5] = -46.2242;
+weights[7][0] = -0.079;
+weights[7][1] = 0.419001;
+weights[7][2] = 0.284001;
+weights[7][3] = 0.0370007;
+weights[7][4] = -0.302;
+weights[7][5] = -1.30468;
+weights[8][0] = -11.6917;
+weights[8][1] = 0.0512254;
+weights[8][2] = -0.087;
+weights[8][3] = 0.0918304;
+weights[8][4] = 0.186623;
+weights[8][5] = 11.377;
+weights[9][0] = 0.456;
+weights[9][1] = 0.373001;
+weights[9][2] = 7.0552;
+weights[9][3] = -0.33;
+weights[9][4] = 0.496001;
+weights[9][5] = -4.50166;
+weights[10][0] = -0.195;
+weights[10][1] = 45.9185;
+weights[10][2] = -0.416;
+weights[10][3] = -0.173;
+weights[10][4] = -0.164;
+weights[10][5] = -43.8722;
+weights[11][0] = 0.346001;
+weights[11][1] = 5.57447;
+weights[11][2] = -0.187;
+weights[11][3] = 9.81124;
+weights[11][4] = -0.376;
+weights[11][5] = -11.6286;
+weights[12][0] = 0.0819997;
+weights[12][1] = -2.99213;
+weights[12][2] = 0.314;
+weights[12][3] = 6.00677;
+weights[12][4] = -3.70957;
+weights[12][5] = -4.32082;
+weights[13][0] = -0.457;
+weights[13][1] = 0.25;
+weights[13][2] = -0.413;
+weights[13][3] = 0.308;
+weights[13][4] = 4.87743;
+weights[13][5] = -3.12223;
+
 
